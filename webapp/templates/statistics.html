@@ -1,0 +1,23 @@
+{% load static %}
+
+{% include "views/top.html" %}
+      
+<br>
+
+<h1><img src="{% static 'webapp/img/icons/bucket.svg' %}" width="64" class="mr-3"> Statistiken</h1>
+
+<br><br>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Wasserverbrauch</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Historie</a>
+  </li>
+</ul>
+      
+
+{% include "views/footer.html" %}
+
+{% include "views/bottom.html" %}

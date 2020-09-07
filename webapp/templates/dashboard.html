@@ -1,0 +1,85 @@
+{% load static %}
+
+{% include "views/top.html" %}
+      
+      <br>
+
+      <div class="jumbotron background_weather_sunny">
+        
+        <h1 class="display-4">Guten Morgen</h1>
+        <p class="lead">Dein Garten wurde heute morgen gewässert.</p>
+        
+      </div>
+
+      <div class="container">
+        
+        <div class="row">
+          
+          <div class="col-sm">
+            <div class="media">
+              <img src="{% static 'webapp/img/icons/sprinkler.svg' %}" width="64" class="mr-3">
+              <div class="media-body">
+                <h5 class="mt-0">Alle Geräte funktionieren</h5>
+                <p class="card-text">Du musst nichts weiter unternehmen.</p>
+                <a href="{% url 'devices' %}" class="btn btn-success">Geräte</a>
+                <a href="#" class="btn btn-secondary">Gerät hinzufügen</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-sm">
+            <div class="media">
+              <img src="{% static 'webapp/img/icons/plans.svg' %}" width="64" class="mr-3">
+              <div class="media-body">
+                <h5 class="mt-0">Wässerung um 19:00 Uhr</h5>
+                <p class="card-text">Alles läuft nach Plan.</p>
+                <a href="{% url 'plans' %}" class="btn btn-warning">Pläne</a>
+                <a href="#" class="btn btn-danger">Pausieren</a>
+                <a href="#" class="btn btn-secondary">Plan hinzufügen</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+
+        <br><br>
+
+        <div class="row">
+
+            <div class="col-sm">
+            <div class="media">
+              <img src="{% static 'webapp/img/icons/bucket.svg' %}" width="64" class="mr-3">
+              <div class="media-body">
+                <h5 class="mt-0">127 Liter </h5>
+                <p class="card-text">Wasserverbauch der letzten 7 Tage.</p>
+                <a href="{% url 'statistics' %}" class="btn btn-primary">Statistiken</a>
+                <a href="#" class="btn btn-secondary">Wasser sparen</a>
+              </div>
+            </div>
+          
+          </div>
+
+          <div class="col-sm">
+            <div class="media">
+              <img src="{% static 'webapp/img/icons/weather.svg' %}" width="64" class="mr-3">
+              <div class="media-body">
+                <h5 class="mt-0">Wetter</h5>
+                <p class="card-text">Die nächsten Tage wird es sonnig.</p>
+                <a href="{% url 'weather' %}" class="btn btn-primary">Wetter</a>
+              </div>
+            </div>
+          
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+      
+      
+
+{% include "views/footer.html" %}
+
+{% include "views/bottom.html" %}

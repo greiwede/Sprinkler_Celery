@@ -1,0 +1,101 @@
+{% load static %}
+
+{% include "views/top.html" %}
+      
+<br>
+
+<h1><img src="{% static 'webapp/img/icons/sprinkler.svg' %}" width="64" class="mr-3"> Geräte</h1>
+
+<br><br>
+
+<a class="btn btn-success" href="#" role="button">Neues Gerät</a>
+
+<br>
+
+<br>
+
+<form class="form-inline" method="GET" action="devices.php">
+  <div class="form-group mb-2">
+    <input name="name" type="text" class="form-control" placeholder="Nach Bezeichnung durchsuchen...">
+  </div>
+  <div class="form-group mx-sm-3 mb-2">
+    <select name="device" id="inputState" class="form-control">
+        <option selected>Alle Geräte</option>
+        <option>Sprinkler</option>
+        <option>Sensor</option>
+    </select>
+  </div>
+  <div class="form-group mx-sm-3 mb-2">
+    <select name="status" id="inputState" class="form-control">
+        <option selected>Alle Stati</option>
+        <option>OK</option>
+        <option>Warnung</option>
+        <option>Fehler</option>
+    </select>
+  </div>
+  <div class="form-group mx-sm-3 mb-2">
+    <button type="submit" class="btn btn-primary">Aktualisieren</button>
+  </div>
+</form>
+
+<br>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Typ</th>
+      <th scope="col">Status</th>
+      <th scope="col">Zuletzt aktiv</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td scope="row">Blumenbeet</td>
+      <td>Sprinkler</td>
+      <td><span class="badge badge-success">OK</span></td>
+      <td>Vorgestern um 12:30 Uhr</td>
+      <td>
+        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
+        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
+      </td>
+    </tr>
+    <tr>
+      <td scope="row">Kräuterschnecke</td>
+      <td>Sprinkler</td>
+      <td><span class="badge badge-success">OK</span></td>
+      <td>Heute um 10:30 Uhr</td>
+      <td>
+        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
+        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
+      </td>
+    </tr>
+    <tr>
+      <td scope="row">Rasen vorne</td>
+      <td>Sprinkler</td>
+      <td><span class="badge badge-danger">Keine Verbindung</span></td>
+      <td>Vor 2 Wochen</td>
+      <td>
+        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
+        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
+      </td>
+    </tr>
+    <tr>
+      <td scope="row">Feuchtigkeit Blumenbeet</td>
+      <td>Sensor</td>
+      <td><span class="badge badge-warning">Überprüfen</span></td>
+      <td>Eben gerade</td>
+      <td>
+        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
+        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+{% include "views/footer.html" %}
+
+{% include "views/bottom.html" %}
