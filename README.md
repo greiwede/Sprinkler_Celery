@@ -7,4 +7,4 @@ It is supposed to run on a Raspberry Pi.
 
 <h2>How this project was created</h2>
 
-This project was established as a exam for the module "Programmierprojekt".
+This project was established as an exam for the module "Programmierprojekt".
