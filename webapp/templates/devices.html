@@ -39,7 +39,7 @@
 </form>
 
 <br>
-
+{% if devices %}
 <table class="table table-hover">
   <thead>
     <tr>
@@ -50,51 +50,25 @@
       <th scope="col"></th>
     </tr>
   </thead>
-  <tbody>
+  <tbody> 
+    {% for device in devices %}
     <tr>
-      <td scope="row">Blumenbeet</td>
-      <td>Sprinkler</td>
-      <td><span class="badge badge-success">OK</span></td>
+      <td scope="row">{{ device.device_name }}</td>
+      <td>{{ device.device_type }}</td>
+      <td><span class="badge badge-success">{{ device.device_status }}</span></td>
       <td>Vorgestern um 12:30 Uhr</td>
       <td>
-        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
+        <a class="btn-sm btn-secondary" href="{% url 'device_edit' device.id %}" role="button">Bearbeiten</a>
         <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
       </td>
     </tr>
-    <tr>
-      <td scope="row">Kräuterschnecke</td>
-      <td>Sprinkler</td>
-      <td><span class="badge badge-success">OK</span></td>
-      <td>Heute um 10:30 Uhr</td>
-      <td>
-        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
-        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
-      </td>
-    </tr>
-    <tr>
-      <td scope="row">Rasen vorne</td>
-      <td>Sprinkler</td>
-      <td><span class="badge badge-danger">Keine Verbindung</span></td>
-      <td>Vor 2 Wochen</td>
-      <td>
-        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
-        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
-      </td>
-    </tr>
-    <tr>
-      <td scope="row">Feuchtigkeit Blumenbeet</td>
-      <td>Sensor</td>
-      <td><span class="badge badge-warning">Überprüfen</span></td>
-      <td>Eben gerade</td>
-      <td>
-        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
-        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
-      </td>
-    </tr>
+    {% endfor %}
   </tbody>
 </table>
 
-
+{% else %}
+  <p>Es wurden keine Geräte gefunden.</p>
+{% endif %}
 
 {% include "views/footer.html" %}
 

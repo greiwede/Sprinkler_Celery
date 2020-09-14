@@ -15,16 +15,16 @@
 <br>
 
       
-<form class="form-inline" method="GET" action="plans.php">
+<form class="form-inline" method="GET" action="{% url 'plans' %}">
   <div class="form-group mb-2">
-    <input name="name" type="text" class="form-control" placeholder="Nach Bezeichnung durchsuchen...">
+    <input value="{{ filter_name }}" name="name" type="text" class="form-control" placeholder="Nach Bezeichnung durchsuchen...">
   </div>
   <div class="form-group mx-sm-3 mb-2">
     <select name="status" id="inputState" class="form-control">
-        <option selected>Alle Stati</option>
-        <option>OK</option>
-        <option>Warnung</option>
-        <option>Fehler</option>
+        <option {% if filter_status == 'Alle' %} selected {% endif %}>Alle</option>
+        <option {% if filter_status == 'OK' %} selected {% endif %}>OK</option>
+        <option {% if filter_status == 'Warnung' %} selected {% endif %}>Warnung</option>
+        <option {% if filter_status == 'Fehler' %} selected {% endif %}>Fehler</option>
     </select>
   </div>
   <div class="form-group mx-sm-3 mb-2">

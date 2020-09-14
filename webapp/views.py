@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.template import Context, loader
 from django.template.response import TemplateResponse
 
-from . import *
+from .models import *
 
 # Create your views here.
 
@@ -21,19 +21,49 @@ def devices(request):
     args = {}
 
     # GET variables
-
     args['filter_name'] = request.GET.get('name', '')
-
     args['filter_device'] = request.GET.get('device', '')
-
     args['filter_status'] = request.GET.get('status', '')
-    
+
+    check = 0
+    q = Device.objects
+    if(args['filter_name']!=''):
+        q = q.filter(device_name__contains=args['filter_name'])
+        check = 1
+    if(args['filter_device'] == 'Sprinkler' or args['filter_device'] == 'Sensor'):
+        q = q.filter(device_type__contains=args['filter_device'])
+        check = 1
+    if(args['filter_status'] == 'OK' or args['filter_status'] == 'Warnung' or args['filter_status'] == 'Fehler'):
+        q = q.filter(device_status__contains=args['filter_status'])
+        check = 1
+
+    if(check == 0):
+        q = q.all()
+
+    args['devices'] = q
 
     return TemplateResponse(request, "devices.html", args)
 
+def device_edit(request, device_id):
+
+    args = {}
+
+    q = Device.objects.get(id=device_id)
+
+    args['device'] = q
+
+    return TemplateResponse(request, "device_edit.html", args)
+
+
 def plans(request):
-    template = loader.get_template("plans.html")
-    return HttpResponse(template.render())
+
+    args = {}
+
+    # GET variables
+    args['filter_name'] = request.GET.get('name', '')
+    args['filter_status'] = request.GET.get('status', '')
+
+    return TemplateResponse(request, "plans.html", args)
 
 def statistics(request):
     template = loader.get_template("statistics.html")
