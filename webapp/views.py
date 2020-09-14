@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import Context, loader
+from django.template.response import TemplateResponse
 
 from . import *
 
@@ -16,8 +17,19 @@ def dashboard(request):
     return HttpResponse(template.render())
 
 def devices(request):
-    template = loader.get_template("devices.html")
-    return HttpResponse(template.render())
+    
+    args = {}
+
+    # GET variables
+
+    args['filter_name'] = request.GET.get('name', '')
+
+    args['filter_device'] = request.GET.get('device', '')
+
+    args['filter_status'] = request.GET.get('status', '')
+    
+
+    return TemplateResponse(request, "devices.html", args)
 
 def plans(request):
     template = loader.get_template("plans.html")
