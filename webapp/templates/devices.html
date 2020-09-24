@@ -20,9 +20,9 @@
   </div>
   <div class="form-group mx-sm-3 mb-2">
     <select name="device" id="inputState" class="form-control">
-        <option {% if filter_device == 'Alle' %} selected {% endif %}>Alle</option>
         <option {% if filter_device == 'Sprinkler' %} selected {% endif %}>Sprinkler</option>
         <option {% if filter_device == 'Sensor' %} selected {% endif %}>Sensor</option>
+        <option {% if filter_device == 'Pumpe' %} selected {% endif %}>Pumpe</option>
     </select>
   </div>
   <div class="form-group mx-sm-3 mb-2">
@@ -55,11 +55,22 @@
     <tr>
       <td scope="row">{{ device.name }}</td>
       <td>{{ device.device_type }}</td>
-      <td><span class="badge badge-success">{{ device.status }}</span></td>
+      <td>
+        {% if device.status == 'OK' %}
+        <span class="badge badge-success">OK</span>
+        {% endif %}
+        {% if device.status == 'Warnung' %}
+        <span class="badge badge-warning">Warnung</span>
+        {% endif %}
+        {% if device.status == 'Fehler' %}
+        <span class="badge badge-danger">Fehler</span>
+        {% endif %}
+      </td>
       <td>Vorgestern um 12:30 Uhr</td>
       <td>
-        <a class="btn-sm btn-secondary" href="{% url 'device_edit' device.id %}" role="button">Bearbeiten</a>
-        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
+        <a class="btn-sm btn-success" href="{% url 'devices' %}" role="button">Start</a>
+        <a class="btn-sm btn-secondary" href="{% url 'device_edit' edit_key device.id %}" role="button">Bearbeiten</a>
+        <a class="btn-sm btn-danger" href="{% url 'device_delete' edit_key device.id %}" role="button">Löschen</a>
       </td>
     </tr>
     {% endfor %}

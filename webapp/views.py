@@ -27,7 +27,22 @@ def devices(request):
 
     check = 0
 
-    q = Sprinkler.objects
+
+    if args['filter_device'] == 'Pumpe':
+        q = Pump.objects
+        args['edit_key'] = 2
+
+    if args['filter_device'] == 'Sensor':
+        q = Sensor.objects
+        args['edit_key'] = 1
+
+    if args['filter_device'] == 'Sprinkler':
+        q = Sprinkler.objects
+        args['edit_key'] = 0
+    
+    if args['filter_device'] == '':
+        q = Sprinkler.objects
+        args['edit_key'] = 0
 
     if(args['filter_name']!=''):
         q = q.filter(name__contains=args['filter_name'])
@@ -39,20 +54,39 @@ def devices(request):
     if(check == 0):
         q = q.all()
 
-    args['devices'] = q
 
+    args['devices'] = q
 
     return TemplateResponse(request, "devices.html", args)
 
-def device_edit(request, device_id):
+def device_edit(request, device_type, device_id):
 
     args = {}
 
-    q = Device.objects.get(id=device_id)
+    if device_type == 0:
+        q = Sprinkler.objects.get(id=device_id)
+    if device_type == 1:
+        q = Sensor.objects.get(id=device_id)
+    if device_type == 2:
+        q = Pump.objects.get(id=device_id)
 
     args['device'] = q
 
     return TemplateResponse(request, "device_edit.html", args)
+
+def device_delete(request, device_type, device_id):
+
+    args = {}
+
+    if device_type == 0:
+        q = Sprinkler.objects.get(id=device_id).delete()
+    if device_type == 1:
+        q = Sensor.objects.get(id=device_id).delete()
+    if device_type == 2:
+        q = Pump.objects.get(id=device_id).delete()
+
+
+    return redirect('devices')
 
 
 def plans(request):
