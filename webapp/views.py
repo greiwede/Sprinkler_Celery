@@ -26,21 +26,21 @@ def devices(request):
     args['filter_status'] = request.GET.get('status', '')
 
     check = 0
-    q = Device.objects
+
+    q = Sprinkler.objects
+
     if(args['filter_name']!=''):
-        q = q.filter(device_name__contains=args['filter_name'])
-        check = 1
-    if(args['filter_device'] == 'Sprinkler' or args['filter_device'] == 'Sensor'):
-        q = q.filter(device_type__contains=args['filter_device'])
+        q = q.filter(name__contains=args['filter_name'])
         check = 1
     if(args['filter_status'] == 'OK' or args['filter_status'] == 'Warnung' or args['filter_status'] == 'Fehler'):
-        q = q.filter(device_status__contains=args['filter_status'])
+        q = q.filter(status__contains=args['filter_status'])
         check = 1
 
     if(check == 0):
         q = q.all()
 
     args['devices'] = q
+
 
     return TemplateResponse(request, "devices.html", args)
 

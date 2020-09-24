@@ -53,9 +53,9 @@
   <tbody> 
     {% for device in devices %}
     <tr>
-      <td scope="row">{{ device.device_name }}</td>
+      <td scope="row">{{ device.name }}</td>
       <td>{{ device.device_type }}</td>
-      <td><span class="badge badge-success">{{ device.device_status }}</span></td>
+      <td><span class="badge badge-success">{{ device.status }}</span></td>
       <td>Vorgestern um 12:30 Uhr</td>
       <td>
         <a class="btn-sm btn-secondary" href="{% url 'device_edit' device.id %}" role="button">Bearbeiten</a>
