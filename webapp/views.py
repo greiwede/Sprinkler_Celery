@@ -162,6 +162,23 @@ def plans(request):
     args['filter_name'] = request.GET.get('name', '')
     args['filter_status'] = request.GET.get('status', '')
 
+    q = Plan.objects
+
+    check = 0
+
+    if(args['filter_name']!=''):
+        q = q.filter(name__contains=args['filter_name'])
+        check = 1
+    if(args['filter_status'] == 'OK' or args['filter_status'] == 'Warnung' or args['filter_status'] == 'Fehler'):
+        q = q.filter(status__contains=args['filter_status'])
+        check = 1
+
+    if(check == 0):
+        q = q.all()
+
+
+    args['plans'] = q
+
     return TemplateResponse(request, "plans.html", args)
 
 def statistics(request):

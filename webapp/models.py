@@ -40,5 +40,9 @@ class Sensor(models.Model):
     device_type = 'Sensor'
 
 class Plan(models.Model):
-    plan_name = models.CharField(max_length=200)
-    device_status = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='OK',
+    )

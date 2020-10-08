@@ -8,7 +8,7 @@
 
 <br><br>
 
-<a class="btn btn-success" href="#" role="button">Neuer Plan</a>
+<a class="btn btn-success" target="_blank" href="/admin/webapp/plan/add/" role="button">Neuer Plan</a>
 
 <br>
 
@@ -34,6 +34,8 @@
 
 <br>
 
+{% if plans %}
+
 <table class="table table-hover">
   <thead>
     <tr>
@@ -43,27 +45,39 @@
       <th scope="col"></th>
     </tr>
   </thead>
+
+
   <tbody>
+    {% for plan in plans %}
     <tr>
-      <td scope="row">Blumenbeet gießen</td>
-      <td><span class="badge badge-success">OK</span></td>
+      <td scope="row">{{ plan.name }}</td>
+      <td>
+        {% if plan.status == 'OK' %}
+        <span class="badge badge-success">OK</span>
+        {% endif %}
+        {% if plan.status == 'Warnung' %}
+        <span class="badge badge-warning">Warnung</span>
+        {% endif %}
+        {% if plan.status == 'Fehler' %}
+        <span class="badge badge-danger">Fehler</span>
+        {% endif %}
+      </td>
       <td>19:00 Uhr</td>
       <td>
-        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
-        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
+        <a class="btn-sm btn-secondary" href="/admin/webapp/plan/{{plan.id}}/change/" role="button">Bearbeiten</a>
+        <a class="btn-sm btn-danger" href="/admin/webapp/plan/{{plan.id}}/delete/" role="button">Löschen</a>
       </td>
     </tr>
-    <tr>
-      <td scope="row">Rasen sprengen</td>
-      <td><span class="badge badge-success">OK</span></td>
-      <td>Morgen um 08:15 Uhr</td>
-      <td>
-        <a class="btn-sm btn-secondary" href="#" role="button">Bearbeiten</a>
-        <a class="btn-sm btn-danger" href="#" role="button">Löschen</a>
-      </td>
-    </tr>
+    {% endfor %}
   </tbody>
 </table>
+
+{% else %}
+
+<p>Es wurden keine Pläne gefunden.</p>
+
+
+{% endif %}
       
       
 
