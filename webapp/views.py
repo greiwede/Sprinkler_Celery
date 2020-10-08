@@ -75,12 +75,21 @@ def device_start(request, device_type, device_id):
     args = {}
 
     if device_type == 0:
+        t = Sprinkler.objects.get(id=device_id)
+        t.curr_active = True
+        t.save()
         print('Sprinkler mit der ID ', device_id, ' gestartet.')
         return redirect('/devices/?device=Sprinkler')
     if device_type == 1:
+        t = Sensor.objects.get(id=device_id)
+        t.curr_active = True
+        t.save()
         print('Sensor mit der ID ', device_id, ' gestartet.')
         return redirect('/devices/?device=Sensor')
     if device_type == 2:
+        t = Pump.objects.get(id=device_id)
+        t.curr_active = True
+        t.save()
         print('Pumpe mit der ID ', device_id, ' gestartet.')
         return redirect('/devices/?device=Pumpe')
 
@@ -93,12 +102,21 @@ def device_stop(request, device_type, device_id):
     args = {}
 
     if device_type == 0:
+        t = Sprinkler.objects.get(id=device_id)
+        t.curr_active = False
+        t.save()
         print('Sprinkler mit der ID ', device_id, ' gestoppt.')
         return redirect('/devices/?device=Sprinkler')
     if device_type == 1:
+        t = Sensor.objects.get(id=device_id)
+        t.curr_active = False
+        t.save()
         print('Sensor mit der ID ', device_id, ' gestoppt.')
         return redirect('/devices/?device=Sensor')
     if device_type == 2:
+        t = Pump.objects.get(id=device_id)
+        t.curr_active = False
+        t.save()
         print('Pumpe mit der ID ', device_id, ' gestoppt.')
         return redirect('/devices/?device=Pumpe')
 

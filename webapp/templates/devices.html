@@ -70,12 +70,16 @@
         <span class="badge badge-danger">Fehler</span>
         {% endif %}
       </td>
-      <td>Vorgestern um 12:30 Uhr</td>
+      <td>{{ device.curr_active }}</td>
       <td>
         
+        {% if device.curr_active == False %}
         <a class="btn-sm btn-success" href="{% url 'device_start' edit_key device.id %}" role="button">Start</a>
+        {% else %}
         <a class="btn-sm btn-danger" href="{% url 'device_stop' edit_key device.id %}" role="button">Stop</a>
-        
+        {% endif %}
+
+
         <a class="btn-sm btn-secondary" href="/admin/webapp/{{ type_name }}/{{ device.id }}/change/" role="button">Bearbeiten</a>
         <a class="btn-sm btn-secondary" href="/admin/webapp/{{ type_name }}/{{ device.id }}/delete/" role="button">Löschen</a>
 

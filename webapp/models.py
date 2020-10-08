@@ -15,6 +15,7 @@ class Sprinkler(models.Model):
         choices=STATUS_CHOICES,
         default='OK',
     )
+    curr_active = models.BooleanField(default=False)
     device_type = 'Sprinkler'
 
 class Pump(models.Model):
@@ -24,6 +25,7 @@ class Pump(models.Model):
         choices=STATUS_CHOICES,
         default='OK',
     )
+    curr_active = models.BooleanField(default=False)
     device_type = 'Pump'
 
 
@@ -34,6 +36,7 @@ class Sensor(models.Model):
         choices=STATUS_CHOICES,
         default='OK',
     )
+    curr_active = models.BooleanField(default=False)
     device_type = 'Sensor'
 
 class Plan(models.Model):
