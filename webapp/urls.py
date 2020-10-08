@@ -8,8 +8,11 @@ urlpatterns = [
     path('devices/', views.devices, name='devices'),
     path('devices/start/<int:device_type>/<int:device_id>', views.device_start, name='device_start'),
     path('devices/stop/<int:device_type>/<int:device_id>', views.device_stop, name='device_stop'),
+    
+    # old routes that are currently not used
     path('devices/edit/<int:device_type>/<int:device_id>', views.device_edit, name='device_edit'),
     path('devices/delete/<int:device_type>/<int:device_id>', views.device_delete, name='device_delete'),
+    
     path('plans/', views.plans, name='plans'),
     path('statistics/', views.statistics, name='statistics'),
     path('weather/', views.weather, name='weather'),

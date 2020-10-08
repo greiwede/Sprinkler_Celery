@@ -9,9 +9,9 @@
 <br><br>
 
 
-  {% if filter_device == 'Sprinkler' %}<a class="btn btn-success" href="#" role="button">Neuer Sprinkler</a>{% endif %}
-  {% if filter_device == 'Sensor' %}<a class="btn btn-success" href="#" role="button">Neuer Sensor</a>{% endif %}
-  {% if filter_device == 'Pumpe' %}<a class="btn btn-success" href="#" role="button">Neue Pumpe</a>{% endif %}
+  {% if filter_device == 'Sprinkler' %}<a target="_blank" class="btn btn-success" href="/admin/webapp/sprinkler/add/" role="button">Neuer Sprinkler</a>{% endif %}
+  {% if filter_device == 'Sensor' %}<a target="_blank" class="btn btn-success" href="/admin/webapp/sensor/add/" role="button">Neuer Sensor</a>{% endif %}
+  {% if filter_device == 'Pumpe' %}<a target="_blank" class="btn btn-success" href="/admin/webapp/pump/add/" role="button">Neue Pumpe</a>{% endif %}
 
 
 <br>
@@ -76,8 +76,9 @@
         <a class="btn-sm btn-success" href="{% url 'device_start' edit_key device.id %}" role="button">Start</a>
         <a class="btn-sm btn-danger" href="{% url 'device_stop' edit_key device.id %}" role="button">Stop</a>
         
-        <a class="btn-sm btn-secondary" href="{% url 'device_edit' edit_key device.id %}" role="button">Bearbeiten</a>
-        <a class="btn-sm btn-warning" href="{% url 'device_delete' edit_key device.id %}" role="button">Löschen</a>
+        <a class="btn-sm btn-secondary" href="/admin/webapp/{{ type_name }}/{{ device.id }}/change/" role="button">Bearbeiten</a>
+        <a class="btn-sm btn-secondary" href="/admin/webapp/{{ type_name }}/{{ device.id }}/delete/" role="button">Löschen</a>
+
       </td>
     </tr>
     {% endfor %}

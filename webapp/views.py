@@ -37,19 +37,23 @@ def devices(request):
     if args['filter_device'] == 'Pumpe':
         q = Pump.objects
         args['edit_key'] = 2
+        args['type_name'] = 'pump'
 
     if args['filter_device'] == 'Sensor':
         q = Sensor.objects
         args['edit_key'] = 1
+        args['type_name'] = 'sensor'
 
     if args['filter_device'] == 'Sprinkler':
         q = Sprinkler.objects
         args['edit_key'] = 0
+        args['type_name'] = 'sprinkler'
     
     if args['filter_device'] == '':
         q = Sprinkler.objects
         args['edit_key'] = 0
         args['filter_device'] = 'Sprinkler'
+        args['type_name'] = 'sprinkler'
 
     if(args['filter_name']!=''):
         q = q.filter(name__contains=args['filter_name'])
@@ -72,10 +76,13 @@ def device_start(request, device_type, device_id):
 
     if device_type == 0:
         print('Sprinkler mit der ID ', device_id, ' gestartet.')
+        return redirect('/devices/?device=Sprinkler')
     if device_type == 1:
         print('Sensor mit der ID ', device_id, ' gestartet.')
+        return redirect('/devices/?device=Sensor')
     if device_type == 2:
         print('Pumpe mit der ID ', device_id, ' gestartet.')
+        return redirect('/devices/?device=Pumpe')
 
     
 
@@ -87,12 +94,13 @@ def device_stop(request, device_type, device_id):
 
     if device_type == 0:
         print('Sprinkler mit der ID ', device_id, ' gestoppt.')
+        return redirect('/devices/?device=Sprinkler')
     if device_type == 1:
         print('Sensor mit der ID ', device_id, ' gestoppt.')
+        return redirect('/devices/?device=Sensor')
     if device_type == 2:
         print('Pumpe mit der ID ', device_id, ' gestoppt.')
-
-    
+        return redirect('/devices/?device=Pumpe')
 
     return redirect('devices')
 
