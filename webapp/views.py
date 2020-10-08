@@ -15,8 +15,22 @@ def index(request):
     return HttpResponse(template.render())
 
 def dashboard(request):
-    template = loader.get_template("dashboard.html")
-    return HttpResponse(template.render())
+
+    args = {}
+
+    # Read user config from config file
+    with open('user_settings.json', 'r') as f:
+            user_config = json.load(f)
+
+    if user_config['userName'] != '':
+        args['name'] = user_config['userName']
+    else:
+        args['name'] = 'Honey'
+    
+
+
+
+    return TemplateResponse(request, "dashboard.html", args)
 
 def devices(request):
     
