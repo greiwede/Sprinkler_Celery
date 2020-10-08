@@ -8,20 +8,35 @@
 
 <br><br>
 
-<form class="form-inline" method="POST" action="{% url 'settings' %}">
-  
-	{% csrf_token %}
-  
+<form method="POST" action="{% url 'settings' %}">
+
+  {% csrf_token %}
   <div class="form-group mb-2">
-    <input value="{{ filter_longitude }}" name="longitude" type="text" class="form-control" placeholder="Längengrad">
+    <label for="userName">Dein Name</label>
+    <input value="{{ filter_user_name }}" id="userName" name="userName" type="text" maxlength="32" class="form-control" placeholder="Vorname">
+    <small id="userNameHelp" class="form-text text-muted">Dieser Name wird nur für die individuelle Begrüßung auf dem Dashboard verwendet.</small>
+  </div>
+
+  <div class="row">
+    <div class="col form-group mb-2">
+      <label for="latitude">Breitengrad</label>
+      <input value="{{ filter_latitude }}" id="latitude" name="latitude" type="number" maxlength="2" step="0.00001" class="form-control" placeholder="Breitengrad">
+    </div>
+
+    <div class="col form-group mb-2">
+      <label for="longitude">Längengrad</label>
+      <input value="{{ filter_longitude }}" id="longitude" name="longitude" type="number" maxlength="2" step="0.00001" class="form-control" placeholder="Längengrad">
+    </div>
   </div>
 
   <div class="form-group mb-2">
-    <input value="{{ filter_latitude }}" name="latitude" type="text" class="form-control" placeholder="Breitengrad">
+    <label for="owmAPIKey">OpenWeatherMap API-Key</label>
+    <input value="{{ filter_owm_api_key }}" id="owmAPIKey" name="owmAPIKey" type="text" maxlength="32" class="form-control" placeholder="API-Key">
+    <small id="owmAPIKeyHelp" class="form-text text-muted">Erhalte deinen API-Key <a href="https://openweathermap.org/api" target="_blank">hier</a>.</small>
   </div>
-  
-  <div class="form-group mx-sm-3 mb-2">
-    <button type="submit" class="btn btn-primary">Speichern</button>
+
+  <div class="form-group mb-2">
+    <button type="submit" class="btn btn-success">Speichern</button>
   </div>
 
 </form>

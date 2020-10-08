@@ -4,6 +4,8 @@ from django.shortcuts import render
 from django.template import Context, loader
 from django.template.response import TemplateResponse
 
+import json
+
 from .models import *
 
 # Create your views here.
@@ -190,17 +192,29 @@ def weather(request):
     return HttpResponse(template.render())
 
 def settings(request):
+    
+    # Read user config from config file
+    with open('user_settings.json', 'r') as f:
+            user_config = json.load(f)
 
-    args = {}
+    args = dict()
 
     # GET variables
-    args['filter_longitude'] = request.POST.get('longitude', '')
-    args['filter_latitude'] = request.POST.get('latitude', '')
+    args['filter_user_name'] = request.POST.get('userName', user_config['userName'])
+    args['filter_latitude'] = request.POST.get('latitude', user_config['latitude'])
+    args['filter_longitude'] = request.POST.get('longitude', user_config['longitude'])
+    args['filter_owm_api_key'] = request.POST.get('owmAPIKey', user_config['owmAPIKey'])
 
-    # Argumente irgendwo hin speichern
+    user_config = {
+                    'userName': args['filter_user_name'], 
+                    'latitude': args['filter_latitude'],
+                    'longitude': args['filter_longitude'],
+                    'owmAPIKey': args['filter_owm_api_key'],
+                  }
 
-
-
+    # Save user configuration to config file
+    with open('user_settings.json', 'w') as f:
+        json.dump(user_config, f, indent=4)
 
     return TemplateResponse(request, "settings.html", args)
 
