@@ -8,6 +8,7 @@
         
         <h1 class="display-4">Guten Morgen</h1>
         <p class="lead">Dein Garten wurde heute morgen gewässert.</p>
+        <p class="lead">📍 Lingen (Ems), Niedersachsen | 🌡 19°C | 🌥 Bewölkt</p>
         
       </div>
 
@@ -22,7 +23,6 @@
                 <h5 class="mt-0">Alle Geräte funktionieren</h5>
                 <p class="card-text">Du musst nichts weiter unternehmen.</p>
                 <a href="{% url 'devices' %}" class="btn btn-success">Geräte</a>
-                <a href="#" class="btn btn-secondary">Gerät hinzufügen</a>
               </div>
             </div>
           </div>
@@ -35,7 +35,7 @@
                 <p class="card-text">Alles läuft nach Plan.</p>
                 <a href="{% url 'plans' %}" class="btn btn-warning">Pläne</a>
                 <a href="#" class="btn btn-danger">Pausieren</a>
-                <a href="#" class="btn btn-secondary">Plan hinzufügen</a>
+                <a href="/admin/webapp/plan/add/" class="btn btn-secondary">Plan hinzufügen</a>
               </div>
             </div>
           
@@ -53,7 +53,6 @@
                 <h5 class="mt-0">127 Liter </h5>
                 <p class="card-text">Wasserverbauch der letzten 7 Tage.</p>
                 <a href="{% url 'statistics' %}" class="btn btn-primary">Statistiken</a>
-                <a href="#" class="btn btn-secondary">Wasser sparen</a>
               </div>
             </div>
           
