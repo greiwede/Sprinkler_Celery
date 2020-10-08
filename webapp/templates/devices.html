@@ -8,7 +8,11 @@
 
 <br><br>
 
-<a class="btn btn-success" href="#" role="button">Neues Gerät</a>
+
+  {% if filter_device == 'Sprinkler' %}<a class="btn btn-success" href="#" role="button">Neuer Sprinkler</a>{% endif %}
+  {% if filter_device == 'Sensor' %}<a class="btn btn-success" href="#" role="button">Neuer Sensor</a>{% endif %}
+  {% if filter_device == 'Pumpe' %}<a class="btn btn-success" href="#" role="button">Neue Pumpe</a>{% endif %}
+
 
 <br>
 
@@ -78,7 +82,15 @@
 </table>
 
 {% else %}
-  <p>Es wurden keine Geräte gefunden.</p>
+  {% if filter_device == 'Sprinkler' %}
+    <p>Es wurde kein Sprinkler gefunden. Um andere Geräte anzuzeigen den Filter ändern.</p>
+  {% endif %}
+  {% if filter_device == 'Sensor' %}
+    <p>Es wurde kein Sensor gefunden. Um andere Geräte anzuzeigen den Filter ändern.</p>
+  {% endif %}
+  {% if filter_device == 'Pumpe' %}
+    <p>Es wurde keine Pumpe gefunden. Um andere Geräte anzuzeigen den Filter ändern.</p>
+  {% endif %}
 {% endif %}
 
 {% include "views/footer.html" %}

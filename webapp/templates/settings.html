@@ -8,6 +8,24 @@
 
 <br><br>
 
+<form class="form-inline" method="POST" action="{% url 'settings' %}">
+  
+	{% csrf_token %}
+  
+  <div class="form-group mb-2">
+    <input value="{{ filter_longitude }}" name="longitude" type="text" class="form-control" placeholder="Längengrad">
+  </div>
+
+  <div class="form-group mb-2">
+    <input value="{{ filter_latitude }}" name="latitude" type="text" class="form-control" placeholder="Breitengrad">
+  </div>
+  
+  <div class="form-group mx-sm-3 mb-2">
+    <button type="submit" class="btn btn-primary">Speichern</button>
+  </div>
+
+</form>
+
 
 
       

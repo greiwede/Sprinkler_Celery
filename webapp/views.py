@@ -43,6 +43,7 @@ def devices(request):
     if args['filter_device'] == '':
         q = Sprinkler.objects
         args['edit_key'] = 0
+        args['filter_device'] = 'Sprinkler'
 
     if(args['filter_name']!=''):
         q = q.filter(name__contains=args['filter_name'])
@@ -108,8 +109,17 @@ def weather(request):
     return HttpResponse(template.render())
 
 def settings(request):
-    template = loader.get_template("settings.html")
-    return HttpResponse(template.render())
+
+    args = {}
+
+    # GET variables
+    args['filter_longitude'] = request.POST.get('longitude', '')
+    args['filter_latitude'] = request.POST.get('latitude', '')
+
+    # Argumente irgendwo hin speichern
+
+
+    return TemplateResponse(request, "settings.html", args)
 
 def help(request):
     template = loader.get_template("help.html")
