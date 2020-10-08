@@ -72,9 +72,12 @@
       </td>
       <td>Vorgestern um 12:30 Uhr</td>
       <td>
-        <a class="btn-sm btn-success" href="{% url 'devices' %}" role="button">Start</a>
+        
+        <a class="btn-sm btn-success" href="{% url 'device_start' edit_key device.id %}" role="button">Start</a>
+        <a class="btn-sm btn-danger" href="{% url 'device_stop' edit_key device.id %}" role="button">Stop</a>
+        
         <a class="btn-sm btn-secondary" href="{% url 'device_edit' edit_key device.id %}" role="button">Bearbeiten</a>
-        <a class="btn-sm btn-danger" href="{% url 'device_delete' edit_key device.id %}" role="button">Löschen</a>
+        <a class="btn-sm btn-warning" href="{% url 'device_delete' edit_key device.id %}" role="button">Löschen</a>
       </td>
     </tr>
     {% endfor %}

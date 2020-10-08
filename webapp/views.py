@@ -18,6 +18,12 @@ def dashboard(request):
 
 def devices(request):
     
+    # Edit Key:
+    # Pumpe = 2
+    # Sensor = 1
+    # Sprinkler = 0
+    
+
     args = {}
 
     # GET variables
@@ -59,6 +65,38 @@ def devices(request):
     args['devices'] = q
 
     return TemplateResponse(request, "devices.html", args)
+
+def device_start(request, device_type, device_id):
+
+    args = {}
+
+    if device_type == 0:
+        print('Sprinkler mit der ID ', device_id, ' gestartet.')
+    if device_type == 1:
+        print('Sensor mit der ID ', device_id, ' gestartet.')
+    if device_type == 2:
+        print('Pumpe mit der ID ', device_id, ' gestartet.')
+
+    
+
+    return redirect('devices')
+
+def device_stop(request, device_type, device_id):
+
+    args = {}
+
+    if device_type == 0:
+        print('Sprinkler mit der ID ', device_id, ' gestoppt.')
+    if device_type == 1:
+        print('Sensor mit der ID ', device_id, ' gestoppt.')
+    if device_type == 2:
+        print('Pumpe mit der ID ', device_id, ' gestoppt.')
+
+    
+
+    return redirect('devices')
+
+
 
 def device_edit(request, device_type, device_id):
 
@@ -117,6 +155,8 @@ def settings(request):
     args['filter_latitude'] = request.POST.get('latitude', '')
 
     # Argumente irgendwo hin speichern
+
+
 
 
     return TemplateResponse(request, "settings.html", args)
