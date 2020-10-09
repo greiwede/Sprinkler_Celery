@@ -18,6 +18,9 @@ class Sprinkler(models.Model):
     curr_active = models.BooleanField(default=False)
     device_type = 'Sprinkler'
 
+    def __str__(self):
+        return self.name
+
 class Pump(models.Model):
     name = models.CharField(max_length=200)
     status = models.CharField(
@@ -27,6 +30,9 @@ class Pump(models.Model):
     )
     curr_active = models.BooleanField(default=False)
     device_type = 'Pump'
+
+    def __str__(self):
+        return self.name
 
 
 class Sensor(models.Model):
@@ -39,6 +45,9 @@ class Sensor(models.Model):
     curr_active = models.BooleanField(default=False)
     device_type = 'Sensor'
 
+    def __str__(self):
+        return self.name
+
 class Plan(models.Model):
     name = models.CharField(max_length=200)
     status = models.CharField(
@@ -49,6 +58,9 @@ class Plan(models.Model):
     description = models.CharField(max_length=3000, default="Beschreibung")
 
     automation = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 
     # Relationen zu Sprinklern
