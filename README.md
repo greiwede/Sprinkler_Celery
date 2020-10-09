@@ -8,6 +8,7 @@ It is supposed to run on a Raspberry Pi.
 Download & Install Django <br>
 Download ZIP <br>
 Extract into Folder <br>
+"pip install django-crontab"<br>
 Console >> python manage.py migrate <br>
 Console >> python manage.py runserver <br>
 
