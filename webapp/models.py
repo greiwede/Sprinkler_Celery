@@ -71,8 +71,8 @@ class Schedule(models.Model):
     allow_friday = models.BooleanField(default=False)
     allow_saturday = models.BooleanField(default=False)
     allow_sunday = models.BooleanField(default=False)
-    allow_time_start = models.TimeField(auto_now=True, auto_now_add=False)
-    allow_time_stop = models.TimeField(auto_now=True, auto_now_add=False)
+    allow_time_start = models.TimeField(auto_now=False, auto_now_add=False)
+    allow_time_stop = models.TimeField(auto_now=False, auto_now_add=False)
 
     deny_monday = models.BooleanField(default=False)
     deny_tuesday = models.BooleanField(default=False)
@@ -81,5 +81,5 @@ class Schedule(models.Model):
     deny_friday = models.BooleanField(default=False)
     deny_saturday = models.BooleanField(default=False)
     deny_sunday = models.BooleanField(default=False)
-    deny_time_start = models.TimeField(auto_now=True, auto_now_add=False)
-    deny_time_stop = models.TimeField(auto_now=True, auto_now_add=False)
+    deny_time_start = models.TimeField(auto_now=False, auto_now_add=False)
+    deny_time_stop = models.TimeField(auto_now=False, auto_now_add=False)

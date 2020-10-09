@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'webapp.apps.WebappConfig',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +123,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Cronjobs
+CRONJOBS = [
+    ('*/1 * * * *', 'sprinkler.cron.read_weather')
+]
