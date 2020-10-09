@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import Context, loader
 from django.template.response import TemplateResponse
+from django.forms import inlineformset_factory
 
 import json
 
@@ -196,6 +197,31 @@ def plans(request):
     args['plans'] = q
 
     return TemplateResponse(request, "plans.html", args)
+
+def plans_create(request):
+
+    args = {}
+
+#    plan = Plan.objects.get(id=4)
+#
+#    PlanFormset = inlineformset_factory(Plan, exclude=('status',))
+#
+#    if request.method == 'POST':
+#
+#        formset = PlanFormset(request.POST, instance=plan)
+#        if formset.is_valid():
+#            formset.save()
+#
+#    formset = PlanFormset()
+#
+#    args['formset'] = formset
+
+    args['form'] = PlanForm()
+
+    
+
+    return TemplateResponse(request, "plans_create.html", args)
+
 
 def statistics(request):
     template = loader.get_template("statistics.html")

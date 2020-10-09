@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm
 
 # Create your models here.
 
@@ -64,12 +65,24 @@ class Plan(models.Model):
 
 
     # Relationen zu Sprinklern
+    sprinkler = models.ManyToManyField(Sprinkler)
 
     # Relationen zu Pumpe
+    pump = models.ManyToManyField(Pump)
 
     # Relation zu Sensoren
+    sensor = models.ManyToManyField(Sensor)
 
-    # Relation zu den Schedules
+
+    # Form
+
+
+class PlanForm(ModelForm):
+    class Meta:
+        model = Plan
+        fields = ['name', 'status', 'description', 'automation', 'sprinkler', 'pump', 'sensor']
+
+
 
     
 class Schedule(models.Model):

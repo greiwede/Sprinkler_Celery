@@ -14,6 +14,9 @@ urlpatterns = [
     path('devices/delete/<int:device_type>/<int:device_id>', views.device_delete, name='device_delete'),
     
     path('plans/', views.plans, name='plans'),
+    path('plans/create', views.plans_create, name='plan_create'),
+
+
     path('statistics/', views.statistics, name='statistics'),
     path('weather/', views.weather, name='weather'),
     path('settings/', views.settings, name='settings'),
