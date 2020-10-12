@@ -178,12 +178,55 @@ def device_edit(request, device_type, device_id):
 
     args = {}
 
+    args['device_type'] = device_type
+
+    args['device_id'] = device_id
+
     if device_type == 0: # Sprinkler
-        pass
+
+        if request.method == 'POST':
+
+            d = Sprinkler.objects.get(pk=device_id)
+            f = SprinklerForm(request.POST, instance=d)
+            f.save()
+            return redirect('devices')
+
+        else:
+
+            d = Sprinkler.objects.get(pk=device_id)
+            args['headline'] = "Sprinkler bearbeiten"
+            args['form'] = SprinklerForm(instance=d)
+        
     if device_type == 1: # Sensor
-        pass
+
+        if request.method == 'POST':
+
+            d = Sensor.objects.get(pk=device_id)
+            f = SensorForm(request.POST, instance=d)
+            f.save()
+            return redirect('/devices/?device=Sensor')
+
+        else:
+
+            d = Sensor.objects.get(pk=device_id)
+            args['headline'] = "Sensor bearbeiten"
+            args['form'] = SensorForm(instance=d)
+        
     if device_type == 2: # Pump
-        pass
+
+        if request.method == 'POST':
+
+            d = Pump.objects.get(pk=device_id)
+            f = PumpForm(request.POST, instance=d)
+            f.save()
+            return redirect('/devices/?device=Pumpe')
+
+        else:
+
+            d = Pump.objects.get(pk=device_id)
+            args['headline'] = "Pumpe bearbeiten"
+            args['form'] = PumpForm(instance=d)
+        
 
     
 

@@ -80,7 +80,7 @@
         {% endif %}
 
 
-        <a class="btn-sm btn-secondary" href="/admin/webapp/{{ type_name }}/{{ device.id }}/change/" role="button">Bearbeiten</a>
+        <a class="btn-sm btn-secondary" href="{% url 'device_edit' edit_key device.id %}" role="button">Bearbeiten</a>
         <a class="btn-sm btn-secondary" href="/admin/webapp/{{ type_name }}/{{ device.id }}/delete/" role="button">Löschen</a>
 
       </td>

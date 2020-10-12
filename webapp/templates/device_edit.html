@@ -1,26 +1,23 @@
 {% load static %}
 
 {% include "views/top.html" %}
-
+      
 <br>
 
-{{ device.id }}
+<h1><img src="{% static 'webapp/img/icons/sprinkler.svg' %}" width="64" class="mr-3"> {{ headline }}</h1>
 
-<br>
+<br><br>
 
-{{ device.name }}
+<form method="POST" action="{% url 'device_edit' device_type device_id %}">
+    
+    {% csrf_token %}
 
-<br>
+    {{ form }}
+    
+    <button type="submit">Save</button>
+</form>
 
-{{ device.device_type }}
 
-<br>
-
-{{ device.status }}
-
-<br>
-
-{{ device.device_name }}
 
 
 {% include "views/footer.html" %}
