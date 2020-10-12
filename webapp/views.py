@@ -227,6 +227,25 @@ def plans_create(request):
 
     return TemplateResponse(request, "plans_create.html", args)
 
+def plans_edit(request, plan_id):
+
+    args = {}
+
+    args['id'] = plan_id
+
+    if request.method == 'POST':
+
+        p = Plan.objects.get(pk=plan_id)
+        f = PlanForm(request.POST, instance=p)
+        f.save()
+        return redirect('plans')
+
+    else:
+
+        plan = Plan.objects.get(pk=plan_id)
+        args['form'] = PlanForm(instance=plan)
+
+    return TemplateResponse(request, "plans_edit.html", args)
 
 def statistics(request):
     template = loader.get_template("statistics.html")
