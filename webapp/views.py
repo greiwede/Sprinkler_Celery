@@ -240,8 +240,10 @@ def device_delete(request, device_type, device_id):
         q = Sprinkler.objects.get(id=device_id).delete()
     if device_type == 1:
         q = Sensor.objects.get(id=device_id).delete()
+        return redirect('/devices/?device=Sensor')
     if device_type == 2:
         q = Pump.objects.get(id=device_id).delete()
+        return redirect('/devices/?device=Pumpe')
 
 
     return redirect('devices')
