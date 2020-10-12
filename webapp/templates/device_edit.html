@@ -14,7 +14,16 @@
 
     {{ form }}
     
-    <button type="submit">Save</button>
+    <br><br>
+
+    {% if device_type == 0 %}
+    <a class="btn btn-danger" href="/devices/?device=Sprinkler" role="button">Abbrechen</a>
+    {% elif device_type == 1 %}
+    <a class="btn btn-danger" href="/devices/?device=Sensor" role="button">Abbrechen</a>
+    {% elif device_type == 2 %}
+    <a class="btn btn-danger" href="/devices/?device=Pumpe" role="button">Abbrechen</a>
+    {% endif %}
+    <button type="submit" class="btn btn-success">Speichern</button>
 </form>
 
 

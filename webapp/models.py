@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ModelForm
+from django import forms
 
 # Create your models here.
 
@@ -25,7 +26,12 @@ class Sprinkler(models.Model):
 class SprinklerForm(ModelForm):
     class Meta:
         model = Sprinkler
-        fields = ['name','status']
+        fields = ('name','status')
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 class Pump(models.Model):
     name = models.CharField(max_length=200)
@@ -43,7 +49,12 @@ class Pump(models.Model):
 class PumpForm(ModelForm):
     class Meta:
         model = Pump
-        fields = ['name','status']
+        fields = ('name','status')
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 class Sensor(models.Model):
     name = models.CharField(max_length=200)
@@ -61,7 +72,12 @@ class Sensor(models.Model):
 class SensorForm(ModelForm):
     class Meta:
         model = Sensor
-        fields = ['name','status']
+        fields = ('name','status')
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 class Plan(models.Model):
     name = models.CharField(max_length=200)
@@ -90,7 +106,17 @@ class Plan(models.Model):
 class PlanForm(ModelForm):
     class Meta:
         model = Plan
-        fields = ['name', 'status', 'description', 'automation', 'sprinkler', 'pump', 'sensor']
+        fields = ('name', 'status', 'description', 'automation', 'sprinkler', 'pump', 'sensor')
+    
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.TextInput(attrs={'class': 'form-control'}),
+            'automation': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'sprinkler': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'pump': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'sensor': forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }
     
 class Schedule(models.Model):
 
