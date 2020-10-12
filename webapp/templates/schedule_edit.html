@@ -1,0 +1,27 @@
+{% load static %}
+
+{% include "views/top.html" %}
+      
+<br>
+
+<h1><img src="{% static 'webapp/img/icons/plans.svg' %}" width="64" class="mr-3"> Zeitplan für {{ plan.name }} bearbeiten</h1>
+
+<br><br>
+
+<form method="POST" action="{% url 'schedule_edit' plan.id schedule_id %}">
+    
+    {% csrf_token %}
+
+    {{ form }}
+    
+    <br><br>
+    <a class="btn btn-danger" href="{% url 'plan_edit' plan.id %}" role="button">Abbrechen</a>
+    <button type="submit" class="btn btn-success">Speichern</button>
+</form>
+
+
+
+
+{% include "views/footer.html" %}
+
+{% include "views/bottom.html" %}

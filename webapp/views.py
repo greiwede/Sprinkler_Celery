@@ -276,8 +276,6 @@ def plans(request):
 
 def plans_create(request):
 
-    # Schedules fehlen noch
-
     args = {}
 
     args['form'] = PlanForm()
@@ -290,8 +288,6 @@ def plans_create(request):
     return TemplateResponse(request, "plans_create.html", args)
 
 def plans_edit(request, plan_id):
-
-    # Schedules fehlen noch
 
     args = {}
 
@@ -309,6 +305,10 @@ def plans_edit(request, plan_id):
         plan = Plan.objects.get(pk=plan_id)
         args['form'] = PlanForm(instance=plan)
 
+        args['schedules'] = Schedule.objects.filter(plan=plan_id).all()
+
+        
+
     return TemplateResponse(request, "plans_edit.html", args)
 
 def plans_delete(request, plan_id):
@@ -317,6 +317,59 @@ def plans_delete(request, plan_id):
     instance.delete()
 
     return redirect('plans')
+
+def schedule_create(request, plan_id):
+
+    args = {}
+
+    args['form'] = ScheduleForm(initial={'plan': plan_id})
+
+    args['plan'] = Plan.objects.get(pk=plan_id)
+
+    if request.method == 'POST':
+        s = ScheduleForm(request.POST)
+        new_schedule = s.save()
+        return redirect('plan_edit', plan_id=plan_id)
+
+    return TemplateResponse(request, "schedule_create.html", args)
+
+
+    return redirect('plan_edit', plan_id=plan_id)
+
+def schedule_edit(request, plan_id, schedule_id):
+
+    args = {}
+
+    args['id'] = plan_id
+
+    args['plan'] = Plan.objects.get(pk=plan_id)
+
+    args['schedule_id'] = schedule_id
+
+    if request.method == 'POST':
+
+        s = Schedule.objects.get(pk=schedule_id)
+        f = ScheduleForm(request.POST, instance=s)
+        f.save()
+        return redirect('plan_edit', plan_id=plan_id)
+
+    else:
+
+        schedule = Schedule.objects.get(pk=schedule_id)
+        args['form'] = ScheduleForm(instance=schedule)
+
+        
+
+    return TemplateResponse(request, "schedule_edit.html", args)
+
+    
+
+def schedule_delete(request, plan_id, schedule_id):
+
+    Schedule.objects.filter(id=schedule_id, plan=plan_id).delete()
+
+    return redirect('plan_edit', plan_id=plan_id)
+
 
 def statistics(request):
     template = loader.get_template("statistics.html")

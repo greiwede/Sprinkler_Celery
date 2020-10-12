@@ -141,3 +141,36 @@ class Schedule(models.Model):
     deny_sunday = models.BooleanField(default=False)
     deny_time_start = models.TimeField(auto_now=False, auto_now_add=False)
     deny_time_stop = models.TimeField(auto_now=False, auto_now_add=False)
+
+class ScheduleForm(ModelForm):
+
+    class Meta:
+        model = Schedule
+        fields = ('plan', 'allow_monday', 'allow_tuesday', 'allow_wednesday', 'allow_thursday',
+         'allow_friday', 'allow_saturday', 'allow_sunday', 'allow_time_start', 'allow_time_stop',
+         'deny_monday', 'deny_tuesday', 'deny_wednesday', 'deny_thursday',
+         'deny_friday', 'deny_saturday', 'deny_sunday', 'deny_time_start', 'deny_time_stop')
+
+
+        widgets = {
+            'plan': forms.NumberInput(attrs={'style': 'display:none'}), 
+            'allow_monday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'allow_tuesday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'allow_wednesday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'allow_thursday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_friday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'allow_saturday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'allow_sunday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'allow_time_start': forms.TimeInput(attrs={'class': 'form-control'}), 
+            'allow_time_stop': forms.TimeInput(attrs={'class': 'form-control'}),
+            'deny_monday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'deny_tuesday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'deny_wednesday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'deny_thursday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'deny_friday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'deny_saturday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'deny_sunday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'deny_time_start': forms.TimeInput(attrs={'class': 'form-control'}), 
+            'deny_time_stop': forms.TimeInput(attrs={'class': 'form-control'}),
+        }
+

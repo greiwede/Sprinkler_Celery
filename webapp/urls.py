@@ -19,6 +19,10 @@ urlpatterns = [
     path('plans/edit/<int:plan_id>', views.plans_edit, name='plan_edit'),
     path('plans/delete/<int:plan_id>', views.plans_delete, name='plan_delete'),
 
+    path('plans/edit/<int:plan_id>/schedule/create/', views.schedule_create, name='schedule_create'),
+    path('plans/edit/<int:plan_id>/schedule/edit/<int:schedule_id>', views.schedule_edit, name='schedule_edit'),
+    path('plans/edit/<int:plan_id>/schedule/delete/<int:schedule_id>', views.schedule_delete, name='schedule_delete'),
+
     path('statistics/', views.statistics, name='statistics'),
     path('weather/', views.weather, name='weather'),
     path('settings/', views.settings, name='settings'),

@@ -13,6 +13,59 @@
     {% csrf_token %}
 
     {{ form }}
+
+    <br><br>
+    <h3>Zeitplan</h3>
+    <br>
+
+    <a class="btn-sm btn-success" href="{% url 'schedule_create' id %}" role="button">Neuer Zeitplan</a>
+
+    <br><br>
+
+
+
+    {% if schedules %}
+
+    <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Erlaubte Wochentage</th>
+      <th scope="col">Ausführungsstart</th>
+      <th scope="col">Ausführungsstop</th>
+      <th scope="col">Verbotene Wochentage</th>
+      <th scope="col">Verbotsstart</th>
+      <th scope="col">Verbotsstop</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+
+
+  <tbody>
+    {% for schedule in schedules %}
+    <tr>
+      <td>Jeden Tag</td>
+      <td>Start: {{ schedule.allow_time_start }}</td>
+      <td>Stop: {{ schedule.allow_time_stop }}</td>
+      <td>MO, DI und FR</td>
+      <td>Start: {{ schedule.deny_time_start }}</td>
+      <td>Stop: {{ schedule.deny_time_stop }}</td>
+      <td>
+        <a class="btn-sm btn-secondary" href="{% url 'schedule_edit' id schedule.id %}" role="button">Bearbeiten</a>
+        <a onclick="return confirm('Soll der Plan {{ plan.name }} löschen?')" class="btn-sm btn-danger" href="{% url 'schedule_delete' id schedule.id %}" role="button">Löschen</a>
+      </td>
+    </tr>
+
+
+
+    {% endfor %}
+    </tbody>
+</table>
+    {% else %}
+    Für diesen Plan wurden noch keine Zeitpläne definiert.
+    {% endif %}
+
+    <br><br>
+    <hr>
     
     <br><br>
     <a class="btn btn-danger" href="{% url 'plans' %}" role="button">Abbrechen</a>
