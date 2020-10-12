@@ -65,7 +65,7 @@
       <td>19:00 Uhr</td>
       <td>
         <a class="btn-sm btn-secondary" href="{% url 'plan_edit' plan.id %}" role="button">Bearbeiten</a>
-        <a class="btn-sm btn-danger" href="/admin/webapp/plan/{{plan.id}}/delete/" role="button">Löschen</a>
+        <a onclick="return confirm('Soll der Plan {{ plan.name }} löschen?')" class="btn-sm btn-danger" href="{% url 'plan_delete' plan.id %}" role="button">Löschen</a>
       </td>
     </tr>
     {% endfor %}

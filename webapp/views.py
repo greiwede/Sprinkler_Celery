@@ -175,7 +175,6 @@ def plans(request):
 
     args = {}
 
-    # GET variables
     args['filter_name'] = request.GET.get('name', '')
     args['filter_status'] = request.GET.get('status', '')
 
@@ -193,32 +192,17 @@ def plans(request):
     if(check == 0):
         q = q.all()
 
-
     args['plans'] = q
 
     return TemplateResponse(request, "plans.html", args)
 
 def plans_create(request):
 
+    # Schedules fehlen noch
+
     args = {}
 
-#    plan = Plan.objects.get(id=4)
-#
-#    PlanFormset = inlineformset_factory(Plan, exclude=('status',))
-#
-#    if request.method == 'POST':
-#
-#        formset = PlanFormset(request.POST, instance=plan)
-#        if formset.is_valid():
-#            formset.save()
-#
-#    formset = PlanFormset()
-#
-#    args['formset'] = formset
-
     args['form'] = PlanForm()
-
-    # Wenn POST data vorhanden ist den neuen Plan absaven
 
     if request.method == 'POST':
         f = PlanForm(request.POST)
@@ -228,6 +212,8 @@ def plans_create(request):
     return TemplateResponse(request, "plans_create.html", args)
 
 def plans_edit(request, plan_id):
+
+    # Schedules fehlen noch
 
     args = {}
 
@@ -246,6 +232,13 @@ def plans_edit(request, plan_id):
         args['form'] = PlanForm(instance=plan)
 
     return TemplateResponse(request, "plans_edit.html", args)
+
+def plans_delete(request, plan_id):
+
+    instance = Plan.objects.get(id=plan_id)
+    instance.delete()
+
+    return redirect('plans')
 
 def statistics(request):
     template = loader.get_template("statistics.html")
