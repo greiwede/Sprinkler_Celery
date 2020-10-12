@@ -218,7 +218,12 @@ def plans_create(request):
 
     args['form'] = PlanForm()
 
-    
+    # Wenn POST data vorhanden ist den neuen Plan absaven
+
+    if request.method == 'POST':
+        f = PlanForm(request.POST)
+        new_plan = f.save()
+        return redirect('plans')
 
     return TemplateResponse(request, "plans_create.html", args)
 
