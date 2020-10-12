@@ -139,20 +139,53 @@ def device_stop(request, device_type, device_id):
 
     return redirect('devices')
 
+def device_create(request, device_type):
 
+    args = {}
+
+    args['device_type'] = device_type
+
+    if device_type == 0: # Sprinkler
+        if request.method == 'POST':
+            d = SprinklerForm(request.POST)
+            new_device = d.save()
+            return redirect('devices')
+        else:
+            args['headline'] = "Neuer Sprinkler"
+            args['form'] = SprinklerForm()
+    if device_type == 1: # Sensor
+        if request.method == 'POST':
+            d = SensorForm(request.POST)
+            new_device = d.save()
+            return redirect('/devices/?device=Sensor')
+        else:
+            args['headline'] = "Neuer Sensor"
+            args['form'] = SensorForm()
+    if device_type == 2: # Pump
+        if request.method == 'POST':
+            d = PumpForm(request.POST)
+            new_device = d.save()
+            return redirect('/devices/?device=Pumpe')
+        else:
+            args['headline'] = "Neue Pumpe"
+            args['form'] = PumpForm()
+
+    
+
+    return TemplateResponse(request, "device_create.html", args)
 
 def device_edit(request, device_type, device_id):
 
     args = {}
 
-    if device_type == 0:
-        q = Sprinkler.objects.get(id=device_id)
-    if device_type == 1:
-        q = Sensor.objects.get(id=device_id)
-    if device_type == 2:
-        q = Pump.objects.get(id=device_id)
+    if device_type == 0: # Sprinkler
+        pass
+    if device_type == 1: # Sensor
+        pass
+    if device_type == 2: # Pump
+        pass
 
-    args['device'] = q
+    
 
     return TemplateResponse(request, "device_edit.html", args)
 

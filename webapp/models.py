@@ -22,6 +22,11 @@ class Sprinkler(models.Model):
     def __str__(self):
         return self.name
 
+class SprinklerForm(ModelForm):
+    class Meta:
+        model = Sprinkler
+        fields = ['name','status']
+
 class Pump(models.Model):
     name = models.CharField(max_length=200)
     status = models.CharField(
@@ -35,6 +40,10 @@ class Pump(models.Model):
     def __str__(self):
         return self.name
 
+class PumpForm(ModelForm):
+    class Meta:
+        model = Pump
+        fields = ['name','status']
 
 class Sensor(models.Model):
     name = models.CharField(max_length=200)
@@ -48,6 +57,11 @@ class Sensor(models.Model):
 
     def __str__(self):
         return self.name
+
+class SensorForm(ModelForm):
+    class Meta:
+        model = Sensor
+        fields = ['name','status']
 
 class Plan(models.Model):
     name = models.CharField(max_length=200)
@@ -73,17 +87,10 @@ class Plan(models.Model):
     # Relation zu Sensoren
     sensor = models.ManyToManyField(Sensor)
 
-
-    # Form
-
-
 class PlanForm(ModelForm):
     class Meta:
         model = Plan
         fields = ['name', 'status', 'description', 'automation', 'sprinkler', 'pump', 'sensor']
-
-
-
     
 class Schedule(models.Model):
 

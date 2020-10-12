@@ -1,0 +1,25 @@
+{% load static %}
+
+{% include "views/top.html" %}
+      
+<br>
+
+<h1><img src="{% static 'webapp/img/icons/sprinkler.svg' %}" width="64" class="mr-3"> {{ headline }}</h1>
+
+<br><br>
+
+<form method="POST" action="{% url 'device_create' device_type %}">
+    
+    {% csrf_token %}
+
+    {{ form }}
+    
+    <button type="submit">Save</button>
+</form>
+
+
+
+
+{% include "views/footer.html" %}
+
+{% include "views/bottom.html" %}

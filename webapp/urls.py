@@ -9,7 +9,7 @@ urlpatterns = [
     path('devices/start/<int:device_type>/<int:device_id>', views.device_start, name='device_start'),
     path('devices/stop/<int:device_type>/<int:device_id>', views.device_stop, name='device_stop'),
     
-    # old routes that are currently not used
+    path('devices/create/<int:device_type>', views.device_create, name='device_create'),
     path('devices/edit/<int:device_type>/<int:device_id>', views.device_edit, name='device_edit'),
     path('devices/delete/<int:device_type>/<int:device_id>', views.device_delete, name='device_delete'),
     

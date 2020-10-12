@@ -9,9 +9,9 @@
 <br><br>
 
 
-  {% if filter_device == 'Sprinkler' %}<a target="_blank" class="btn btn-success" href="/admin/webapp/sprinkler/add/" role="button">Neuer Sprinkler</a>{% endif %}
-  {% if filter_device == 'Sensor' %}<a target="_blank" class="btn btn-success" href="/admin/webapp/sensor/add/" role="button">Neuer Sensor</a>{% endif %}
-  {% if filter_device == 'Pumpe' %}<a target="_blank" class="btn btn-success" href="/admin/webapp/pump/add/" role="button">Neue Pumpe</a>{% endif %}
+  {% if filter_device == 'Sprinkler' %}<a target="_blank" class="btn btn-success" href="{% url 'device_create' 0 %}" role="button">Neuer Sprinkler</a>{% endif %}
+  {% if filter_device == 'Sensor' %}<a target="_blank" class="btn btn-success" href="{% url 'device_create' 1 %}" role="button">Neuer Sensor</a>{% endif %}
+  {% if filter_device == 'Pumpe' %}<a target="_blank" class="btn btn-success" href="{% url 'device_create' 2 %}" role="button">Neue Pumpe</a>{% endif %}
 
 
 <br>
