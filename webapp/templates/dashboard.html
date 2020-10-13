@@ -8,7 +8,14 @@
         
         <h1 class="display-4">Guten Morgen, {{ name }}</h1>
         <p class="lead">Dein Garten wurde heute morgen gewässert.</p>
-        <p class="lead">📍 Lingen (Ems), Niedersachsen | 🌡 19°C | 🌥 Bewölkt</p>
+        <p class="lead">📍 
+          {% if location_town %}
+          {{ location_town }}, 
+          {% endif %}
+          {% if location_county %}
+          {{ location_county }}, 
+          {% endif %}
+          {{ location_state }} | 🌡 19°C | 🌥 Bewölkt</p>
         
       </div>
 
@@ -31,7 +38,7 @@
             <div class="media">
               <img src="{% static 'webapp/img/icons/plans.svg' %}" width="64" class="mr-3">
               <div class="media-body">
-                <h5 class="mt-0">Wässerung am {{ water_time.day }}.{{ water_time.month }}.{{ water_time.year }} um {{ water_time.hour }}:{{ water_time.minute }}</h5>
+                <h5 class="mt-0">Nächste Wässerung am {{ water_time_day }}.{{ water_time_month }}.{{ water_time_year }} um {{ water_time_hour }}:{{ water_time_minute }} Uhr</h5>
                 <p class="card-text">Alles läuft nach Plan.</p>
                 <a href="{% url 'plans' %}" class="btn btn-warning">Pläne</a>
                 <a href="#" class="btn btn-danger">Pausieren</a>

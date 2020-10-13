@@ -121,7 +121,6 @@ class Plan(models.Model):
             schedule_next_allowed_date_time = schedule.get_next_date_time(schedule.get_allowed_weekdays(), schedule.allow_time_start)
             if (next_allowed_start_date_time == None) or (next_allowed_start_date_time > schedule_next_allowed_date_time):
                 next_allowed_start_date_time = schedule_next_allowed_date_time
-        print(next_allowed_start_date_time)
         return next_allowed_start_date_time
 
     def get_next_denied_start_date_time(self):
@@ -207,22 +206,17 @@ class Schedule(models.Model):
                 now_date_time = datetime.datetime.now()
                 temp_date_time = now_date_time + datetime.timedelta(days=i)
 
-                day = str(temp_date_time.day)
-                if int(day) < 10: day = str(0) + day
+                day = str("{:02d}".format(temp_date_time.day))
 
-                month = str(temp_date_time.month)
-                if int(month) < 10: month = str(0) + month
+                month = str("{:02d}".format(temp_date_time.month))
 
                 year = str(temp_date_time.year)
 
-                hour = str(dt.hour)
-                if int(hour) < 10: hour = str(0) + hour
+                hour = str("{:02d}".format(dt.hour))
 
-                minute = str(dt.minute)
-                if int(minute) < 10: minute = str(0) + minute
+                minute = str("{:02d}".format(dt.minute))
 
-                second = str(dt.second)
-                if int(second) < 10: second = str(0) + second
+                second = str("{:02d}".format(dt.second))
 
                 date_time_str = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
 

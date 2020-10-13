@@ -10,6 +10,8 @@ import json
 
 from .models import *
 
+from geopy.geocoders import Nominatim
+
 # Create your views here.
 
 def index(request):
@@ -27,19 +29,43 @@ def dashboard(request):
     # Read user config from config file
     args['name'] = request.user.username.capitalize()
 
-    # plans = Plan.objects.all()
-
-    # next_allowed_start_date_time = None
-    # for plan in plans:
-    #     plan_next_allowed_start_date_time = plan.get_next_allowed_start_date_time()
-    #     if (next_allowed_start_date_time == None) or (next_allowed_start_date_time > plan_next_allowed_start_date_time):
-    #         next_allowed_start_date_time = plan_next_allowed_start_date_time
+    # Get next watering time data
+    plans = Plan.objects.all()
+    next_allowed_start_date_time = None
+    for plan in plans:
+        plan_next_allowed_start_date_time = plan.get_next_allowed_start_date_time()
+        if next_allowed_start_date_time == None:
+            next_allowed_start_date_time = plan_next_allowed_start_date_time
+        elif plan_next_allowed_start_date_time == None:
+            continue
+        elif next_allowed_start_date_time > plan_next_allowed_start_date_time:
+            next_allowed_start_date_time = plan_next_allowed_start_date_time
     
-    # args['water_time']['year'] = next_allowed_start_date_time.year
-    # args['water_time']['month'] = next_allowed_start_date_time.month
-    # args['water_time']['day'] = next_allowed_start_date_time.day
-    # args['water_time']['hour'] = next_allowed_start_date_time.hour
-    # args['water_time']['minute'] = next_allowed_start_date_time.minute
+    args['water_time_year'] = str(next_allowed_start_date_time.year)
+    args['water_time_month'] = str("{:02d}".format(next_allowed_start_date_time.month))
+    args['water_time_day'] = str("{:02d}".format(next_allowed_start_date_time.day))
+    args['water_time_hour'] = str("{:02d}".format(next_allowed_start_date_time.hour))
+    args['water_time_minute'] = str("{:02d}".format(next_allowed_start_date_time.minute))
+
+    # Get location data
+    with open('user_settings.json', 'r') as f:
+            user_config = json.load(f)
+
+    geolocator = Nominatim(user_agent="openmapquest", timeout=3)
+    location = geolocator.reverse('{}, {}'.format(user_config['latitude'], user_config['longitude']), language='de')
+    address = location.raw['address']
+    if 'city' in location.raw['address']:
+        args['location_town'] = location.raw['address']['city']    
+    elif 'town' in location.raw['address']:
+        args['location_town'] = location.raw['address']['town']
+    elif 'village' in location.raw['address']:
+        args['location_town'] = location.raw['address']['village']
+    elif 'municipality' in location.raw['address']:
+        args['location_town'] = location.raw['address']['municipality']
+    if 'county' in location.raw['address']:
+        args['location_county'] = location.raw['address']['county']
+    args['location_state'] = location.raw['address']['state']
+    args['location_country'] = location.raw['address']['country']
 
     return TemplateResponse(request, "dashboard.html", args)
 

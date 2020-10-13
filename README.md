@@ -9,6 +9,7 @@ Download & Install Django <br>
 Download ZIP <br>
 Extract into Folder <br>
 "pip install django-crontab"<br>
+"pip install geopy"<br>
 Console >> python manage.py migrate <br>
 Console >> python manage.py runserver <br>
 
