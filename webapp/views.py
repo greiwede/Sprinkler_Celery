@@ -270,6 +270,14 @@ def plans(request):
     if(check == 0):
         q = q.all()
 
+    # schedules = q.get(pk=1).get_related_schedules()
+    # for schedule in schedules:
+    #     print(schedule.__str__())
+    #     print(schedule.get_next_allow_date())
+
+    for plan in q:
+        plan.next_execution_time = plan.get_next_execution_date_time()
+
     args['plans'] = q
 
     return TemplateResponse(request, "plans.html", args)

@@ -2,6 +2,8 @@ from django.db import models
 from django.forms import ModelForm
 from django import forms
 
+import datetime
+
 # Create your models here.
 
 STATUS_CHOICES = [
@@ -90,10 +92,6 @@ class Plan(models.Model):
 
     automation = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.name
-
-
     # Relationen zu Sprinklern
     sprinkler = models.ManyToManyField(Sprinkler)
 
@@ -102,6 +100,26 @@ class Plan(models.Model):
 
     # Relation zu Sensoren
     sensor = models.ManyToManyField(Sensor)
+
+    next_execution_time = None
+
+    def __str__(self):
+        return self.name
+
+    def get_related_schedules(self):
+        return self.schedule_set.all()
+    
+    def get_next_execution_date_time(self):
+        next_execution_date_time = None
+        schedules = self.get_related_schedules()
+
+        for schedule in schedules:
+            next_allow_date_time = schedule.get_next_allow_date_time()
+            if next_execution_date_time == None:
+                next_execution_date_time = next_allow_date_time
+            elif next_execution_date_time > next_allow_date_time:
+                next_execution_date_time = next_allow_date_time
+        return next_execution_date_time
 
 class PlanForm(ModelForm):
     class Meta:
@@ -141,6 +159,61 @@ class Schedule(models.Model):
     deny_sunday = models.BooleanField(default=False)
     deny_time_start = models.TimeField(auto_now=False, auto_now_add=False)
     deny_time_stop = models.TimeField(auto_now=False, auto_now_add=False)
+
+    def get_next_execution_timestamp(self):
+        nextAllowedWeekday = self.getNextAllowedDate()
+    
+    def get_next_allow_date_time(self):
+        allowedWeekdays = self.get_allow_weekdays()
+        weekday = datetime.datetime.now().weekday()
+
+        for i in range(0, 8):
+            if weekday in allowedWeekdays:
+                now_date_time = datetime.datetime.now()
+                temp_date_time = now_date_time + datetime.timedelta(days=i)
+
+                day = str(temp_date_time.day)
+                if int(day) < 10: day = str(0) + day
+
+                month = str(temp_date_time.month)
+                if int(month) < 10: month = str(0) + month
+
+                year = str(temp_date_time.year)
+
+                hour = str(self.allow_time_start.hour)
+                if int(hour) < 10: hour = str(0) + hour
+
+                minute = str(self.allow_time_start.minute)
+                if int(minute) < 10: minute = str(0) + minute
+
+                second = str(self.allow_time_start.second)
+                if int(second) < 10: second = str(0) + second
+
+                date_time_str = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
+
+                allow_date_time = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                
+                if allow_date_time > now_date_time:
+                    return allow_date_time
+            
+            if weekday == 6:
+                weekday = 0
+            else:
+                weekday += 1
+    
+    def get_allow_weekdays(self):
+        allowedWeekdays = []
+        if self.allow_monday: allowedWeekdays.append(0)
+        if self.allow_tuesday: allowedWeekdays.append(1)
+        if self.allow_wednesday: allowedWeekdays.append(2)
+        if self.allow_thursday: allowedWeekdays.append(3)
+        if self.allow_friday: allowedWeekdays.append(4)
+        if self.allow_saturday: allowedWeekdays.append(5)
+        if self.allow_sunday: allowedWeekdays.append(6)
+        return allowedWeekdays
+
+
+
 
 class ScheduleForm(ModelForm):
 
