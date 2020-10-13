@@ -14,4 +14,4 @@ from .models import *
 
 #admin.site.register(Schedule)
 
-
+admin.site.site_header = "Sprinkler User-Verwaltung"

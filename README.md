@@ -12,6 +12,9 @@ Extract into Folder <br>
 Console >> python manage.py migrate <br>
 Console >> python manage.py runserver <br>
 
+Login:
+sprinkleradmin
+admin1234!#
 
 <h2>How this project was created</h2>
 

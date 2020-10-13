@@ -25,13 +25,7 @@ def dashboard(request):
     args = {}
 
     # Read user config from config file
-    with open('user_settings.json', 'r') as f:
-            user_config = json.load(f)
-
-    if user_config['userName'] != '':
-        args['name'] = user_config['userName']
-    else:
-        args['name'] = 'Honey'
+    args['name'] = request.user.username
 
     # plans = Plan.objects.all()
 
@@ -353,13 +347,13 @@ def schedule_delete(request, plan_id, schedule_id):
 
 @login_required(login_url='/admin/login/')
 def statistics(request):
-    template = loader.get_template("statistics.html")
-    return HttpResponse(template.render())
+    args = {}
+    return TemplateResponse(request, "statistics.html", args)
 
 @login_required(login_url='/admin/login/')
 def weather(request):
-    template = loader.get_template("weather.html")
-    return HttpResponse(template.render())
+    args = {}
+    return TemplateResponse(request, "weather.html", args)
 
 @login_required(login_url='/admin/login/')
 def settings(request):
@@ -372,13 +366,12 @@ def settings(request):
     args['username'] = request.user.username
 
     # GET variables
-    args['filter_user_name'] = request.POST.get('userName', user_config['userName'])
+    
     args['filter_latitude'] = request.POST.get('latitude', user_config['latitude'])
     args['filter_longitude'] = request.POST.get('longitude', user_config['longitude'])
     args['filter_owm_api_key'] = request.POST.get('owmAPIKey', user_config['owmAPIKey'])
 
-    user_config = {
-                    'userName': args['filter_user_name'], 
+    user_config = { 
                     'latitude': args['filter_latitude'],
                     'longitude': args['filter_longitude'],
                     'owmAPIKey': args['filter_owm_api_key'],
@@ -392,5 +385,5 @@ def settings(request):
 
 
 def help(request):
-    template = loader.get_template("help.html")
-    return HttpResponse(template.render())
+    args = {}
+    return TemplateResponse(request, "help.html", args)
