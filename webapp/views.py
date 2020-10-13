@@ -45,6 +45,7 @@ def dashboard(request):
 
 @login_required(login_url='/admin/login/')
 def devices(request):
+    
     # Edit Key:
     # Pumpe = 2
     # Sensor = 1
@@ -301,13 +302,14 @@ def plans_edit(request, plan_id):
 
 @login_required(login_url='/admin/login/')
 def plans_delete(request, plan_id):
+    
     plan = Plan.objects.get(id=plan_id)
     plan.delete()
-
     return redirect('plans')
 
 @login_required(login_url='/admin/login/')
 def schedule_create(request, plan_id):
+
     args = {}
     args['form'] = ScheduleForm(initial={'plan': plan_id})
     args['plan'] = Plan.objects.get(pk=plan_id)
@@ -318,9 +320,6 @@ def schedule_create(request, plan_id):
         return redirect('plan_edit', plan_id=plan_id)
 
     return TemplateResponse(request, "schedule_create.html", args)
-
-
-    return redirect('plan_edit', plan_id=plan_id) # Lennart?
 
 @login_required(login_url='/admin/login/')
 def schedule_edit(request, plan_id, schedule_id):
