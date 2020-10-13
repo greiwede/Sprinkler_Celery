@@ -25,7 +25,7 @@ def dashboard(request):
     args = {}
 
     # Read user config from config file
-    args['name'] = request.user.username
+    args['name'] = request.user.username.capitalize()
 
     # plans = Plan.objects.all()
 
