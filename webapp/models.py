@@ -1,15 +1,16 @@
 from django.db import models
 from django.forms import ModelForm
 from django import forms
-
 import datetime
 
+# Status Choices for Plans & Devices
 STATUS_CHOICES = [
         ('OK', 'OK'),
         ('Warnung', 'Warnung'),
         ('Fehler', 'Fehler'),
     ]
 
+# Sprinkler Model
 class Sprinkler(models.Model):
     name = models.CharField(max_length=200)
     status = models.CharField(
@@ -23,7 +24,7 @@ class Sprinkler(models.Model):
     def __str__(self):
         return self.name
 
-
+# Form for Sprinkler
 class SprinklerForm(ModelForm):
     class Meta:
         model = Sprinkler
@@ -34,7 +35,7 @@ class SprinklerForm(ModelForm):
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
 
-
+# Pump Model
 class Pump(models.Model):
     name = models.CharField(max_length=200)
     status = models.CharField(
