@@ -31,7 +31,7 @@
             <div class="media">
               <img src="{% static 'webapp/img/icons/plans.svg' %}" width="64" class="mr-3">
               <div class="media-body">
-                <h5 class="mt-0">Wässerung um 19:00 Uhr</h5>
+                <h5 class="mt-0">Wässerung am {{ water_time.day }}.{{ water_time.month }}.{{ water_time.year }} um {{ water_time.hour }}:{{ water_time.minute }}</h5>
                 <p class="card-text">Alles läuft nach Plan.</p>
                 <a href="{% url 'plans' %}" class="btn btn-warning">Pläne</a>
                 <a href="#" class="btn btn-danger">Pausieren</a>

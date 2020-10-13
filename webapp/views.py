@@ -27,6 +27,20 @@ def dashboard(request):
     else:
         args['name'] = 'Honey'
 
+    # plans = Plan.objects.all()
+
+    # next_allowed_start_date_time = None
+    # for plan in plans:
+    #     plan_next_allowed_start_date_time = plan.get_next_allowed_start_date_time()
+    #     if (next_allowed_start_date_time == None) or (next_allowed_start_date_time > plan_next_allowed_start_date_time):
+    #         next_allowed_start_date_time = plan_next_allowed_start_date_time
+    
+    # args['water_time']['year'] = next_allowed_start_date_time.year
+    # args['water_time']['month'] = next_allowed_start_date_time.month
+    # args['water_time']['day'] = next_allowed_start_date_time.day
+    # args['water_time']['hour'] = next_allowed_start_date_time.hour
+    # args['water_time']['minute'] = next_allowed_start_date_time.minute
+
     return TemplateResponse(request, "dashboard.html", args)
 
 def devices(request):
