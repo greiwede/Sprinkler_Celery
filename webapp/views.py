@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.template import Context, loader
 from django.template.response import TemplateResponse
 from django.forms import inlineformset_factory
+from django.contrib.auth.decorators import login_required
 
 import json
 
@@ -12,9 +13,14 @@ from .models import *
 # Create your views here.
 
 def index(request):
+
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
     template = loader.get_template("index.html")
     return HttpResponse(template.render())
 
+@login_required(login_url='/admin/login/')
 def dashboard(request):
     args = {}
 
@@ -43,6 +49,7 @@ def dashboard(request):
 
     return TemplateResponse(request, "dashboard.html", args)
 
+@login_required(login_url='/admin/login/')
 def devices(request):
     # Edit Key:
     # Pumpe = 2
@@ -93,6 +100,7 @@ def devices(request):
 
     return TemplateResponse(request, "devices.html", args)
 
+@login_required(login_url='/admin/login/')
 def device_start(request, device_type, device_id):
     args = {}
 
@@ -117,6 +125,7 @@ def device_start(request, device_type, device_id):
 
     return redirect('devices')
 
+@login_required(login_url='/admin/login/')
 def device_stop(request, device_type, device_id):
     args = {}
 
@@ -141,6 +150,7 @@ def device_stop(request, device_type, device_id):
 
     return redirect('devices')
 
+@login_required(login_url='/admin/login/')
 def device_create(request, device_type):
     args = {}
     args['device_type'] = device_type
@@ -172,6 +182,7 @@ def device_create(request, device_type):
 
     return TemplateResponse(request, "device_create.html", args)
 
+@login_required(login_url='/admin/login/')
 def device_edit(request, device_type, device_id):
     args = {}
     args['device_type'] = device_type
@@ -212,6 +223,7 @@ def device_edit(request, device_type, device_id):
 
     return TemplateResponse(request, "device_edit.html", args)
 
+@login_required(login_url='/admin/login/')
 def device_delete(request, device_type, device_id):
     args = {}
 
@@ -227,6 +239,7 @@ def device_delete(request, device_type, device_id):
 
     return redirect('devices')
 
+@login_required(login_url='/admin/login/')
 def plans(request):
     args = {}
     args['filter_name'] = request.GET.get('name', '')
@@ -253,6 +266,7 @@ def plans(request):
 
     return TemplateResponse(request, "plans.html", args)
 
+@login_required(login_url='/admin/login/')
 def plans_create(request):
     args = {}
     args['form'] = PlanForm()
@@ -264,6 +278,7 @@ def plans_create(request):
 
     return TemplateResponse(request, "plans_create.html", args)
 
+@login_required(login_url='/admin/login/')
 def plans_edit(request, plan_id):
     args = {}
     args['id'] = plan_id
@@ -290,12 +305,14 @@ def plans_edit(request, plan_id):
 
     return TemplateResponse(request, "plans_edit.html", args)
 
+@login_required(login_url='/admin/login/')
 def plans_delete(request, plan_id):
     plan = Plan.objects.get(id=plan_id)
     plan.delete()
 
     return redirect('plans')
 
+@login_required(login_url='/admin/login/')
 def schedule_create(request, plan_id):
     args = {}
     args['form'] = ScheduleForm(initial={'plan': plan_id})
@@ -311,6 +328,7 @@ def schedule_create(request, plan_id):
 
     return redirect('plan_edit', plan_id=plan_id) # Lennart?
 
+@login_required(login_url='/admin/login/')
 def schedule_edit(request, plan_id, schedule_id):
     args = {}
     args['id'] = plan_id
@@ -328,24 +346,30 @@ def schedule_edit(request, plan_id, schedule_id):
 
     return TemplateResponse(request, "schedule_edit.html", args)
 
+@login_required(login_url='/admin/login/')
 def schedule_delete(request, plan_id, schedule_id):
     Schedule.objects.filter(id=schedule_id, plan=plan_id).delete()
     return redirect('plan_edit', plan_id=plan_id)
 
+@login_required(login_url='/admin/login/')
 def statistics(request):
     template = loader.get_template("statistics.html")
     return HttpResponse(template.render())
 
+@login_required(login_url='/admin/login/')
 def weather(request):
     template = loader.get_template("weather.html")
     return HttpResponse(template.render())
 
+@login_required(login_url='/admin/login/')
 def settings(request):
     # Read user config from config file
     with open('user_settings.json', 'r') as f:
             user_config = json.load(f)
 
     args = {}
+
+    args['username'] = request.user.username
 
     # GET variables
     args['filter_user_name'] = request.POST.get('userName', user_config['userName'])
@@ -365,6 +389,7 @@ def settings(request):
         json.dump(user_config, f, indent=4)
 
     return TemplateResponse(request, "settings.html", args)
+
 
 def help(request):
     template = loader.get_template("help.html")
