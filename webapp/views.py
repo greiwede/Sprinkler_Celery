@@ -233,7 +233,7 @@ def plans(request):
         plans = plans.all()
 
     for plan in plans:
-        plan.next_execution_time = plan.get_next_execution_date_time()
+        plan.next_execution_time = plan.get_next_allowed_start_date_time()
 
     args['plans'] = plans
 
@@ -262,7 +262,17 @@ def plans_edit(request, plan_id):
     else:
         plan = Plan.objects.get(pk=plan_id)
         args['form'] = PlanForm(instance=plan)
-        args['schedules'] = Schedule.objects.filter(plan=plan_id).all()
+
+        schedules = Schedule.objects.filter(plan=plan_id).all()
+        for schedule in schedules:
+            schedule.allowed_weekdays = schedule.get_allowed_weekdays()
+            schedule.denied_weekdays = schedule.get_denied_weekdays()
+            next_allowed_start_date_time = schedule.get_next_date_time(schedule.allowed_weekdays, schedule.allow_time_start)
+            next_allowed_end_date_time = schedule.get_next_date_time(schedule.allowed_weekdays, schedule.allow_time_stop)
+            next_denied_start_date_time = schedule.get_next_date_time(schedule.denied_weekdays, schedule.deny_time_start)
+            next_denied_end_date_time = schedule.get_next_date_time(schedule.denied_weekdays, schedule.deny_time_stop)
+
+        args['schedules'] = schedules
 
     return TemplateResponse(request, "plans_edit.html", args)
 

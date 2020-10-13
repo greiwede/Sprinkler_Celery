@@ -4,8 +4,6 @@ from django import forms
 
 import datetime
 
-# Create your models here.
-
 STATUS_CHOICES = [
         ('OK', 'OK'),
         ('Warnung', 'Warnung'),
@@ -25,6 +23,7 @@ class Sprinkler(models.Model):
     def __str__(self):
         return self.name
 
+
 class SprinklerForm(ModelForm):
     class Meta:
         model = Sprinkler
@@ -34,6 +33,7 @@ class SprinklerForm(ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
+
 
 class Pump(models.Model):
     name = models.CharField(max_length=200)
@@ -48,6 +48,7 @@ class Pump(models.Model):
     def __str__(self):
         return self.name
 
+
 class PumpForm(ModelForm):
     class Meta:
         model = Pump
@@ -57,6 +58,7 @@ class PumpForm(ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
+
 
 class Sensor(models.Model):
     name = models.CharField(max_length=200)
@@ -71,6 +73,7 @@ class Sensor(models.Model):
     def __str__(self):
         return self.name
 
+
 class SensorForm(ModelForm):
     class Meta:
         model = Sensor
@@ -80,6 +83,7 @@ class SensorForm(ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
+
 
 class Plan(models.Model):
     name = models.CharField(max_length=200)
@@ -109,17 +113,43 @@ class Plan(models.Model):
     def get_related_schedules(self):
         return self.schedule_set.all()
     
-    def get_next_execution_date_time(self):
-        next_execution_date_time = None
+    def get_next_allowed_start_date_time(self):
+        next_allowed_start_date_time = None
         schedules = self.get_related_schedules()
-
         for schedule in schedules:
-            next_allow_date_time = schedule.get_next_allow_date_time()
-            if next_execution_date_time == None:
-                next_execution_date_time = next_allow_date_time
-            elif next_execution_date_time > next_allow_date_time:
-                next_execution_date_time = next_allow_date_time
-        return next_execution_date_time
+            schedule_next_allowed_date_time = schedule.get_next_date_time(schedule.get_allowed_weekdays(), schedule.allow_time_start)
+            if (next_allowed_start_date_time == None) or (next_allowed_start_date_time > schedule_next_allowed_date_time):
+                next_allowed_start_date_time = schedule_next_allowed_date_time
+        print(next_allowed_start_date_time)
+        return next_allowed_start_date_time
+
+    def get_next_denied_start_date_time(self):
+        next_denied_start_date_time = None
+        schedules = self.get_related_schedules()
+        for schedule in schedules:
+            schedule_next_denied_start_date_time = schedule.get_next_date_time(schedule.get_denied_weekdays(), schedule.deny_time_start)
+            if (next_denied_start_date_time == None) or (next_denied_start_date_time > schedule_next_denied_start_date_time):
+                next_denied_start_date_time = schedule_next_denied_start_date_time
+        return next_denied_start_date_time
+
+    def get_next_allowed_end_date_time(self):
+        next_allowed_start_date_time = None
+        schedules = self.get_related_schedules()
+        for schedule in schedules:
+            schedule_next_allowed_date_time = schedule.get_next_date_time(schedule.get_allowed_weekdays(), schedule.allow_time_stop)
+            if (next_allowed_start_date_time == None) or (next_allowed_start_date_time > schedule_next_allowed_date_time):
+                next_allowed_start_date_time = schedule_next_allowed_date_time
+        return next_allowed_start_date_time
+
+    def get_next_denied_end_date_time(self):
+        next_denied_start_date_time = None
+        schedules = self.get_related_schedules()
+        for schedule in schedules:
+            schedule_next_denied_start_date_time = schedule.get_next_date_time(schedule.get_denied_weekdays(), schedule.deny_time_stop)
+            if (next_denied_start_date_time == None) or (next_denied_start_date_time > schedule_next_denied_start_date_time):
+                next_denied_start_date_time = schedule_next_denied_start_date_time
+        return next_denied_start_date_time
+
 
 class PlanForm(ModelForm):
     class Meta:
@@ -135,7 +165,8 @@ class PlanForm(ModelForm):
             'pump': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'sensor': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
-    
+
+
 class Schedule(models.Model):
 
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
@@ -160,15 +191,18 @@ class Schedule(models.Model):
     deny_time_start = models.TimeField(auto_now=False, auto_now_add=False)
     deny_time_stop = models.TimeField(auto_now=False, auto_now_add=False)
 
-    def get_next_execution_timestamp(self):
-        nextAllowedWeekday = self.getNextAllowedDate()
+    allowed_weekdays = None
+    denied_weekdays = None
+    next_allowed_start_date_time = None
+    next_allowed_end_date_time = None
+    next_denied_start_date_time = None
+    next_denied_end_date_time = None
     
-    def get_next_allow_date_time(self):
-        allowedWeekdays = self.get_allow_weekdays()
+    def get_next_date_time(self, weekdays, dt):
         weekday = datetime.datetime.now().weekday()
 
         for i in range(0, 8):
-            if weekday in allowedWeekdays:
+            if weekday in weekdays:
                 now_date_time = datetime.datetime.now()
                 temp_date_time = now_date_time + datetime.timedelta(days=i)
 
@@ -180,39 +214,48 @@ class Schedule(models.Model):
 
                 year = str(temp_date_time.year)
 
-                hour = str(self.allow_time_start.hour)
+                hour = str(dt.hour)
                 if int(hour) < 10: hour = str(0) + hour
 
-                minute = str(self.allow_time_start.minute)
+                minute = str(dt.minute)
                 if int(minute) < 10: minute = str(0) + minute
 
-                second = str(self.allow_time_start.second)
+                second = str(dt.second)
                 if int(second) < 10: second = str(0) + second
 
                 date_time_str = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
 
-                allow_date_time = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                date_time = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
                 
-                if allow_date_time > now_date_time:
-                    return allow_date_time
+                if date_time > now_date_time:
+                    return date_time
             
             if weekday == 6:
                 weekday = 0
             else:
                 weekday += 1
     
-    def get_allow_weekdays(self):
-        allowedWeekdays = []
-        if self.allow_monday: allowedWeekdays.append(0)
-        if self.allow_tuesday: allowedWeekdays.append(1)
-        if self.allow_wednesday: allowedWeekdays.append(2)
-        if self.allow_thursday: allowedWeekdays.append(3)
-        if self.allow_friday: allowedWeekdays.append(4)
-        if self.allow_saturday: allowedWeekdays.append(5)
-        if self.allow_sunday: allowedWeekdays.append(6)
-        return allowedWeekdays
+    def get_allowed_weekdays(self):
+        allowed_weekdays = []
+        if self.allow_monday: allowed_weekdays.append(0)
+        if self.allow_tuesday: allowed_weekdays.append(1)
+        if self.allow_wednesday: allowed_weekdays.append(2)
+        if self.allow_thursday: allowed_weekdays.append(3)
+        if self.allow_friday: allowed_weekdays.append(4)
+        if self.allow_saturday: allowed_weekdays.append(5)
+        if self.allow_sunday: allowed_weekdays.append(6)
+        return allowed_weekdays
 
-
+    def get_denied_weekdays(self):
+        denied_weekdays = []
+        if self.deny_monday: denied_weekdays.append(0)
+        if self.deny_tuesday: denied_weekdays.append(1)
+        if self.deny_wednesday: denied_weekdays.append(2)
+        if self.deny_thursday: denied_weekdays.append(3)
+        if self.deny_friday: denied_weekdays.append(4)
+        if self.deny_saturday: denied_weekdays.append(5)
+        if self.deny_sunday: denied_weekdays.append(6)
+        return denied_weekdays
 
 
 class ScheduleForm(ModelForm):
@@ -246,4 +289,3 @@ class ScheduleForm(ModelForm):
             'deny_time_start': forms.TimeInput(attrs={'class': 'form-control'}), 
             'deny_time_stop': forms.TimeInput(attrs={'class': 'form-control'}),
         }
-
