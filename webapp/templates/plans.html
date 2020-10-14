@@ -62,7 +62,13 @@
         <span class="badge badge-danger">Fehler</span>
         {% endif %}
       </td>
-      <td>{{ plan.next_execution_time }}</td>
+      <td>
+      {% if plan.next_execution_time %}
+      {{ plan.next_execution_time }} Uhr
+      {% else %}
+        Kein Zeitplan vorhanden.
+      {% endif %}
+      </td>
       <td>
         <a class="btn-sm btn-secondary" href="{% url 'plan_edit' plan.id %}" role="button">Bearbeiten</a>
         <a onclick="return confirm('Soll der Plan {{ plan.name }} löschen?')" class="btn-sm btn-danger" href="{% url 'plan_delete' plan.id %}" role="button">Löschen</a>

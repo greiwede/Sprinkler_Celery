@@ -114,6 +114,9 @@ class Plan(models.Model):
     def get_related_schedules(self):
         return self.schedule_set.all()
     
+    def get_related_pumps(self):
+        return self.pump.all()
+    
     def get_next_allowed_start_date_time(self):
         next_allowed_start_date_time = None
         schedules = self.get_related_schedules()
@@ -149,6 +152,17 @@ class Plan(models.Model):
             if (next_denied_start_date_time == None) or (next_denied_start_date_time > schedule_next_denied_start_date_time):
                 next_denied_start_date_time = schedule_next_denied_start_date_time
         return next_denied_start_date_time
+    
+    def get_pumps_to_be_activated(self):
+        schedules = self.get_related_schedules()
+        pumps_to_be_activated = None
+        is_denied_time = False
+        for schedule in schedules:
+            if schedule.is_denied_time():
+                return None
+            elif schedule.is_allowed_time():
+                pumps_to_be_activated = self.get_related_pumps()
+        return pumps_to_be_activated
 
 
 class PlanForm(ModelForm):
@@ -207,19 +221,13 @@ class Schedule(models.Model):
                 temp_date_time = now_date_time + datetime.timedelta(days=i)
 
                 day = str("{:02d}".format(temp_date_time.day))
-
                 month = str("{:02d}".format(temp_date_time.month))
-
                 year = str(temp_date_time.year)
-
                 hour = str("{:02d}".format(dt.hour))
-
                 minute = str("{:02d}".format(dt.minute))
-
                 second = str("{:02d}".format(dt.second))
 
                 date_time_str = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
-
                 date_time = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
                 
                 if date_time > now_date_time:
@@ -251,6 +259,33 @@ class Schedule(models.Model):
         if self.deny_saturday: denied_weekdays.append(5)
         if self.deny_sunday: denied_weekdays.append(6)
         return denied_weekdays
+
+    def is_allowed_time(self):
+        next_allowed_start_date_time = self.get_next_date_time(self.get_allowed_weekdays(), self.allow_time_start)
+        next_allowed_end_date_time = self.get_next_date_time(self.get_allowed_weekdays(), self.allow_time_stop)
+        if next_allowed_start_date_time != None:
+            is_same_day = next_allowed_start_date_time <= next_allowed_end_date_time
+        else:
+            return False
+        
+        if is_same_day:
+            return False
+        else:
+            return True           
+
+    def is_denied_time(self):
+        next_denied_start_date_time = self.get_next_date_time(self.get_denied_weekdays(), self.deny_time_start)
+        next_denied_end_date_time = self.get_next_date_time(self.get_denied_weekdays(), self.deny_time_stop)
+        if next_denied_start_date_time != None:
+            is_same_day = next_denied_start_date_time <= next_denied_end_date_time
+        else:
+            return False
+
+        if is_same_day:
+            return False
+        else:
+            return True
+
 
 
 class ScheduleForm(ModelForm):
