@@ -34,6 +34,9 @@ def dashboard(request):
     next_allowed_start_date_time = None
     for plan in plans:
         plan_next_allowed_start_date_time = plan.get_next_allowed_start_date_time()
+        print("-----------------------Anfang------------------------")
+        print(plan)
+        print(plan.get_pumps_to_be_activated())
         if next_allowed_start_date_time == None:
             next_allowed_start_date_time = plan_next_allowed_start_date_time
         elif plan_next_allowed_start_date_time == None:
