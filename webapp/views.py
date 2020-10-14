@@ -5,6 +5,7 @@ from django.template import Context, loader
 from django.template.response import TemplateResponse
 from django.forms import inlineformset_factory
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 import json
 
@@ -27,7 +28,7 @@ def dashboard(request):
     args = {}
 
     # Read user config from config file
-    args['name'] = request.user.username.capitalize()
+    args['first_name'] = request.user.first_name.capitalize()
 
     # Get next watering time data
     plans = Plan.objects.all()
@@ -298,7 +299,8 @@ def plans_create(request):
     if request.method == 'POST':
         plan_form = PlanForm(request.POST)
         new_plan = plan_form.save()
-        return redirect('plans')
+
+        return redirect('plan_edit', new_plan.id)
 
     return TemplateResponse(request, "plans_create.html", args)
 
@@ -390,8 +392,8 @@ def settings(request):
             user_config = json.load(f)
 
     args = {}
-
     args['username'] = request.user.username
+    args['first_name'] = request.user.first_name
 
     # GET variables
     
@@ -415,3 +417,7 @@ def settings(request):
 def help(request):
     args = {}
     return TemplateResponse(request, "help.html", args)
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')

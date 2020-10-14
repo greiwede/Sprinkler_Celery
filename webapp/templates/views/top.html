@@ -48,7 +48,7 @@
       </div>
       <span class="navbar-text">
       {% if user.is_authenticated %}
-      Hi, {{ user.username }}!  <a href="/admin/logout/?next=/">Logout</a>    
+      Hi, {{ user.first_name }}!  <a href="/admin/logout/?next=/">Logout</a>    
       {% else %}
       <a href="/admin/login/?next=/dashboard/">Login</a>
       {% endif %}

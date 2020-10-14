@@ -13,8 +13,12 @@
   {% csrf_token %}
   <div class="form-group mb-2">
     <label for="userName">Dein Name</label>
+    <input value="{{ first_name }}" id="userName" name="userName" type="text" maxlength="32" class="form-control" placeholder="Vorname" readonly>
+    <small id="userNameHelp" class="form-text text-muted">Dies ist Dein Vorname.</small>
+    <br>
+    <label for="userName">Dein Username</label>
     <input value="{{ username }}" id="userName" name="userName" type="text" maxlength="32" class="form-control" placeholder="Vorname" readonly>
-    <small id="userNameHelp" class="form-text text-muted">Dies ist Dein Benutzername.</small>
+    <small id="userNameHelp" class="form-text text-muted">Dies ist Dein Username mit dem Du dich anmeldest.</small>
   </div>
 
   <a class="btn-sm btn-primary" href="/admin/auth/user/" role="button">User-Verwaltung</a>

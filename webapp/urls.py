@@ -2,6 +2,7 @@ from django.urls import path
 from django.contrib import admin
 from . import views
 
+
 urlpatterns = [
     
     # Index
@@ -42,6 +43,7 @@ urlpatterns = [
     path('help/', views.help, name='help'),
 
     # Admin
+    path('admin/logout/', views.logout_view, name='logout'),
     path('admin/', admin.site.urls),
     
 ]
