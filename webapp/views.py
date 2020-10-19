@@ -44,12 +44,13 @@ def dashboard(request):
             continue
         elif next_allowed_start_date_time > plan_next_allowed_start_date_time:
             next_allowed_start_date_time = plan_next_allowed_start_date_time
-    
-    args['water_time_year'] = str(next_allowed_start_date_time.year)
-    args['water_time_month'] = str("{:02d}".format(next_allowed_start_date_time.month))
-    args['water_time_day'] = str("{:02d}".format(next_allowed_start_date_time.day))
-    args['water_time_hour'] = str("{:02d}".format(next_allowed_start_date_time.hour))
-    args['water_time_minute'] = str("{:02d}".format(next_allowed_start_date_time.minute))
+
+    if next_allowed_start_date_time != None:
+        args['water_time_year'] = str(next_allowed_start_date_time.year)
+        args['water_time_month'] = str("{:02d}".format(next_allowed_start_date_time.month))
+        args['water_time_day'] = str("{:02d}".format(next_allowed_start_date_time.day))
+        args['water_time_hour'] = str("{:02d}".format(next_allowed_start_date_time.hour))
+        args['water_time_minute'] = str("{:02d}".format(next_allowed_start_date_time.minute))
 
     # Get location data
     with open('user_settings.json', 'r') as f:
