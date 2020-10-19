@@ -10,6 +10,7 @@ STATUS_CHOICES = [
         ('Fehler', 'Fehler'),
     ]
 
+
 # Sprinkler Model
 class Sprinkler(models.Model):
     name = models.CharField(max_length=200)
