@@ -85,8 +85,9 @@ class Sprinkler(Device):
     curr_active = models.BooleanField(default=False)
     device_type = 'Sprinkler'
     flow_capacity = models.DecimalField(max_digits=5, decimal_places=2)
-    valve_fk = models.ForeignKey(Valve, on_delete=models.SET_NULL, null=True)  # Sprenkler weiterhin gespeichert, wenn ein Ventil geloescht wird, damit es bei Bedarf einen anderen Ventil zugeordnet werden kann
 
+    # Sprenkler weiterhin gespeichert, wenn ein Ventil geloescht wird, damit es bei Bedarf einen anderen Ventil zugeordnet werden kann
+    valve_fk = models.ForeignKey(Valve, on_delete=models.SET_NULL, null=True) 
 
 # Form for Sprinkler
 class SprinklerForm(ModelForm):
@@ -104,9 +105,9 @@ class Plan(CommonInfo):
     description = models.CharField(max_length=3000, default="Beschreibung")
 
     automation_rain = models.BooleanField(default=False)
-    timespace_rain_forecast = models.IntegerField(default=24) # Standardwert 24h Forecast beachten
+    timespace_rain_forecast = models.IntegerField(default=24) # Standardwert 24h für forecast beachten
     automation_sensor = models.BooleanField(default=False)
-    # evt. noch 3. Moeglichkeit hinzufuegen
+    # evt. noch Moeglichkeit hinzufuegen
 
     # Relationen zu Ventilen
     valve = models.ManyToManyField(Valve)
