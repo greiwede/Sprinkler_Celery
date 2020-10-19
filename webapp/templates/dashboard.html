@@ -38,7 +38,11 @@
             <div class="media">
               <img src="{% static 'webapp/img/icons/plans.svg' %}" width="64" class="mr-3">
               <div class="media-body">
-                <h5 class="mt-0">Nächste Wässerung am {{ water_time_day }}.{{ water_time_month }}.{{ water_time_year }} um {{ water_time_hour }}:{{ water_time_minute }} Uhr</h5>
+                {% if water_time_year %}
+                  <h5 class="mt-0">Nächste Wässerung am {{ water_time_day }}.{{ water_time_month }}.{{ water_time_year }} um {{ water_time_hour }}:{{ water_time_minute }} Uhr</h5>
+                {% else %}
+                <h5 class="mt-0">Keine nächste Gartenbewässerung geplant.</h5>
+                {% endif %}
                 <p class="card-text">Alles läuft nach Plan.</p>
                 <a href="{% url 'plans' %}" class="btn btn-warning">Pläne</a>
                 <a href="#" class="btn btn-danger">Pausieren</a>

@@ -39,18 +39,20 @@ class Pump(Device):
     curr_active = models.BooleanField(default=False)
     device_type = 'Pump'
     flow_capacity = models.DecimalField(max_digits=5, decimal_places=2)
-    current_workload = models.DecimalField(max_digits=5, decimal_places=2)
+    current_workload = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
 
-class PumpForm(ModelForm):
+class PumpForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PumpForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     class Meta:
         model = Pump
-        fields = ('name', 'status')
-
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-        }
+        fields = ['name', 'contr_id', 'flow_capacity']
 
 
 class Sensor(Device):
@@ -60,15 +62,17 @@ class Sensor(Device):
     moisture_threshold = models.DecimalField(max_digits=5, decimal_places=2)
 
 
-class SensorForm(ModelForm):
+class SensorForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SensorForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     class Meta:
         model = Sensor
-        fields = ('name', 'status')
-
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-        }
+        fields = ['name', 'contr_id', 'moisture_threshold']
 
 
 class Valve(Device):
@@ -81,24 +85,40 @@ class Valve(Device):
     pump_fk = models.ForeignKey(Pump, on_delete=models.SET_NULL, null=True)
 
 
+class ValveForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ValveForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
+    class Meta:
+        model = Valve
+        fields = ['name', 'contr_id', 'valve_threshold', 'sensor_fk', 'pump_fk']
+
+
 # Sprinkler Model
 class Sprinkler(Device):
     curr_active = models.BooleanField(default=False)
     device_type = 'Sprinkler'
     flow_capacity = models.DecimalField(max_digits=5, decimal_places=2)
-    valve_fk = models.ForeignKey(Valve, on_delete=models.SET_NULL, null=True)  # Sprenkler weiterhin gespeichert, wenn ein Ventil geloescht wird, damit es bei Bedarf einen anderen Ventil zugeordnet werden kann
 
+    # Sprenkler weiterhin gespeichert, wenn ein Ventil geloescht wird, damit es bei Bedarf einen anderen Ventil zugeordnet werden kann
+    valve_fk = models.ForeignKey(Valve, on_delete=models.SET_NULL, null=True) 
 
 # Form for Sprinkler
-class SprinklerForm(ModelForm):
+class SprinklerForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SprinklerForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     class Meta:
         model = Sprinkler
-        fields = ('name', 'status')
-
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-        }
+        fields = ['name', 'contr_id', 'flow_capacity', 'valve_fk']
 
 class WeatherCounter(models.Model)
     weather_counter = None # wie beim Valve_Counter
@@ -110,9 +130,9 @@ class Plan(CommonInfo):
     description = models.CharField(max_length=3000, default="Beschreibung")
 
     automation_rain = models.BooleanField(default=False)
-    timespace_rain_forecast = models.IntegerField(default=24) # Standardwert 24h Forecast beachten
+    timespace_rain_forecast = models.IntegerField(default=24) # Standardwert 24h für forecast beachten
     automation_sensor = models.BooleanField(default=False)
-    # evt. noch 3. Moeglichkeit hinzufuegen
+    # evt. noch Moeglichkeit hinzufuegen
 
     # Relationen zu Ventilen
     valve = models.ManyToManyField(Valve)
@@ -184,19 +204,18 @@ class Plan(CommonInfo):
         return pumps_to_be_activated
 
 
-class PlanForm(ModelForm):
+
+class PlanForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PlanForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     class Meta:
         model = Plan
-        fields = ('name', 'status', 'description', 'valve')
-
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-            'description': forms.TextInput(attrs={'class': 'form-control'}),
-            'sprinkler': forms.SelectMultiple(attrs={'class': 'form-control'}),
-            'pump': forms.SelectMultiple(attrs={'class': 'form-control'}),
-            'sensor': forms.SelectMultiple(attrs={'class': 'form-control'}),
-        }
+        fields = ['name', 'description', 'automation_rain', 'timespace_rain_forecast', 'automation_sensor', 'valve']
 
 
 class Schedule(models.Model):
@@ -304,32 +323,17 @@ class Schedule(models.Model):
             return True
 
 
-class ScheduleForm(ModelForm):
+class ScheduleForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ScheduleForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     class Meta:
         model = Schedule
-        fields = ('plan', 'allow_monday', 'allow_tuesday', 'allow_wednesday', 'allow_thursday',
+        fields = ['plan', 'allow_monday', 'allow_tuesday', 'allow_wednesday', 'allow_thursday',
                   'allow_friday', 'allow_saturday', 'allow_sunday', 'allow_time_start', 'allow_time_stop',
                   'deny_monday', 'deny_tuesday', 'deny_wednesday', 'deny_thursday',
-                  'deny_friday', 'deny_saturday', 'deny_sunday', 'deny_time_start', 'deny_time_stop')
-
-        widgets = {
-            'plan': forms.NumberInput(attrs={'style': 'display:none'}),
-            'allow_monday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_tuesday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_wednesday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_thursday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_friday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_saturday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_sunday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_time_start': forms.TimeInput(attrs={'class': 'form-control'}),
-            'allow_time_stop': forms.TimeInput(attrs={'class': 'form-control'}),
-            'deny_monday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'deny_tuesday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'deny_wednesday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'deny_thursday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'deny_friday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'deny_saturday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'deny_sunday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'deny_time_start': forms.TimeInput(attrs={'class': 'form-control'}),
-            'deny_time_stop': forms.TimeInput(attrs={'class': 'form-control'}),
-        }
+                  'deny_friday', 'deny_saturday', 'deny_sunday', 'deny_time_start', 'deny_time_stop']
