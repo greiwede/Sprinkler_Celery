@@ -5,55 +5,47 @@ import datetime
 
 # Status Choices for Plans & Devices
 STATUS_CHOICES = [
-        ('OK', 'OK'),
-        ('Warnung', 'Warnung'),
-        ('Fehler', 'Fehler'),
-    ]
+    ('OK', 'OK'),
+    ('Warnung', 'Warnung'),
+    ('Fehler', 'Fehler'),
+]
 
-# Sprinkler Model
-class Sprinkler(models.Model):
+
+class CommonInfo(models.Model):
     name = models.CharField(max_length=200)
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
         default='OK',
     )
-    curr_active = models.BooleanField(default=False)
-    device_type = 'Sprinkler'
 
     def __str__(self):
         return self.name
 
-# Form for Sprinkler
-class SprinklerForm(ModelForm):
     class Meta:
-        model = Sprinkler
-        fields = ('name','status')
+        abstract = True
 
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-        }
+
+class Device(CommonInfo):
+    contr_id = models.IntegerField()
+    device_type = None
+
+    class Meta:
+        abstract = True
+
 
 # Pump Model
-class Pump(models.Model):
-    name = models.CharField(max_length=200)
-    status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default='OK',
-    )
+class Pump(Device):
     curr_active = models.BooleanField(default=False)
     device_type = 'Pump'
-
-    def __str__(self):
-        return self.name
+    flow_capacity = models.DecimalField(max_digits=5, decimal_places=2)
+    current_workload = models.DecimalField(max_digits=5, decimal_places=2)
 
 
 class PumpForm(ModelForm):
     class Meta:
         model = Pump
-        fields = ('name','status')
+        fields = ('name', 'status')
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -61,24 +53,17 @@ class PumpForm(ModelForm):
         }
 
 
-class Sensor(models.Model):
-    name = models.CharField(max_length=200)
-    status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default='OK',
-    )
+class Sensor(Device):
     curr_active = models.BooleanField(default=False)
     device_type = 'Sensor'
-
-    def __str__(self):
-        return self.name
+    moisture = None
+    moisture_threshold = models.DecimalField(max_digits=5, decimal_places=2)
 
 
 class SensorForm(ModelForm):
     class Meta:
         model = Sensor
-        fields = ('name','status')
+        fields = ('name', 'status')
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -86,43 +71,65 @@ class SensorForm(ModelForm):
         }
 
 
-class Plan(models.Model):
-    name = models.CharField(max_length=200)
-    status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default='OK',
-    )
+class Valve(Device):
+    curr_active = models.BooleanField(default=False)
+    device_type = 'Ventil'
+    valve_counter = None
+    valve_threshold = models.IntegerField(default=100)
+    sensor_fk = models.ForeignKey(Sensor, on_delete=models.SET_NULL, null=True)
+    pump_fk = models.ForeignKey(Pump, on_delete=models.SET_NULL, null=True)
+
+
+# Sprinkler Model
+class Sprinkler(Device):
+    curr_active = models.BooleanField(default=False)
+    device_type = 'Sprinkler'
+    flow_capacity = models.DecimalField(max_digits=5, decimal_places=2)
+    valve_fk = models.ForeignKey(Valve, on_delete=models.SET_NULL, null=True)  # Sprenkler weiterhin gespeichert, wenn ein Ventil geloescht wird, damit es bei Bedarf einen anderen Ventil zugeordnet werden kann
+
+
+# Form for Sprinkler
+class SprinklerForm(ModelForm):
+    class Meta:
+        model = Sprinkler
+        fields = ('name', 'status')
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+
+class Plan(CommonInfo):
     description = models.CharField(max_length=3000, default="Beschreibung")
 
-    automation = models.BooleanField(default=False)
+    automation_rain = models.BooleanField(default=False)
+    timespace_rain_forecast = models.IntegerField(default=24) # Standardwert 24h Forecast beachten
+    automation_sensor = models.BooleanField(default=False)
+    # evt. noch 3. Moeglichkeit hinzufuegen
 
-    # Relationen zu Sprinklern
-    sprinkler = models.ManyToManyField(Sprinkler)
-
-    # Relationen zu Pumpe
-    pump = models.ManyToManyField(Pump)
-
-    # Relation zu Sensoren
-    sensor = models.ManyToManyField(Sensor)
+    # Relationen zu Ventilen
+    valve = models.ManyToManyField(Valve)
 
     next_execution_time = None
 
-    def __str__(self):
-        return self.name
-
     def get_related_schedules(self):
         return self.schedule_set.all()
-    
+
     def get_related_pumps(self):
         return self.pump.all()
-    
+
+    def is_current_time_denied(self):
+        return True
+
     def get_next_allowed_start_date_time(self):
         next_allowed_start_date_time = None
         schedules = self.get_related_schedules()
         for schedule in schedules:
-            schedule_next_allowed_date_time = schedule.get_next_date_time(schedule.get_allowed_weekdays(), schedule.allow_time_start)
-            if (next_allowed_start_date_time == None) or (next_allowed_start_date_time > schedule_next_allowed_date_time):
+            schedule_next_allowed_date_time = schedule.get_next_date_time(schedule.get_allowed_weekdays(),
+                                                                          schedule.allow_time_start)
+            if (next_allowed_start_date_time == None) or (
+                    next_allowed_start_date_time > schedule_next_allowed_date_time):
                 next_allowed_start_date_time = schedule_next_allowed_date_time
         return next_allowed_start_date_time
 
@@ -130,8 +137,10 @@ class Plan(models.Model):
         next_denied_start_date_time = None
         schedules = self.get_related_schedules()
         for schedule in schedules:
-            schedule_next_denied_start_date_time = schedule.get_next_date_time(schedule.get_denied_weekdays(), schedule.deny_time_start)
-            if (next_denied_start_date_time == None) or (next_denied_start_date_time > schedule_next_denied_start_date_time):
+            schedule_next_denied_start_date_time = schedule.get_next_date_time(schedule.get_denied_weekdays(),
+                                                                               schedule.deny_time_start)
+            if (next_denied_start_date_time == None) or (
+                    next_denied_start_date_time > schedule_next_denied_start_date_time):
                 next_denied_start_date_time = schedule_next_denied_start_date_time
         return next_denied_start_date_time
 
@@ -139,8 +148,10 @@ class Plan(models.Model):
         next_allowed_start_date_time = None
         schedules = self.get_related_schedules()
         for schedule in schedules:
-            schedule_next_allowed_date_time = schedule.get_next_date_time(schedule.get_allowed_weekdays(), schedule.allow_time_stop)
-            if (next_allowed_start_date_time == None) or (next_allowed_start_date_time > schedule_next_allowed_date_time):
+            schedule_next_allowed_date_time = schedule.get_next_date_time(schedule.get_allowed_weekdays(),
+                                                                          schedule.allow_time_stop)
+            if (next_allowed_start_date_time == None) or (
+                    next_allowed_start_date_time > schedule_next_allowed_date_time):
                 next_allowed_start_date_time = schedule_next_allowed_date_time
         return next_allowed_start_date_time
 
@@ -148,11 +159,13 @@ class Plan(models.Model):
         next_denied_start_date_time = None
         schedules = self.get_related_schedules()
         for schedule in schedules:
-            schedule_next_denied_start_date_time = schedule.get_next_date_time(schedule.get_denied_weekdays(), schedule.deny_time_stop)
-            if (next_denied_start_date_time == None) or (next_denied_start_date_time > schedule_next_denied_start_date_time):
+            schedule_next_denied_start_date_time = schedule.get_next_date_time(schedule.get_denied_weekdays(),
+                                                                               schedule.deny_time_stop)
+            if (next_denied_start_date_time == None) or (
+                    next_denied_start_date_time > schedule_next_denied_start_date_time):
                 next_denied_start_date_time = schedule_next_denied_start_date_time
         return next_denied_start_date_time
-    
+
     def get_pumps_to_be_activated(self):
         schedules = self.get_related_schedules()
         pumps_to_be_activated = None
@@ -168,13 +181,12 @@ class Plan(models.Model):
 class PlanForm(ModelForm):
     class Meta:
         model = Plan
-        fields = ('name', 'status', 'description', 'automation', 'sprinkler', 'pump', 'sensor')
-    
+        fields = ('name', 'status', 'description', 'valve')
+
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
             'description': forms.TextInput(attrs={'class': 'form-control'}),
-            'automation': forms.CheckboxInput(attrs={'class': 'form-control'}),
             'sprinkler': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'pump': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'sensor': forms.SelectMultiple(attrs={'class': 'form-control'}),
@@ -182,9 +194,8 @@ class PlanForm(ModelForm):
 
 
 class Schedule(models.Model):
-
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
-    
+
     allow_monday = models.BooleanField(default=False)
     allow_tuesday = models.BooleanField(default=False)
     allow_wednesday = models.BooleanField(default=False)
@@ -211,7 +222,7 @@ class Schedule(models.Model):
     next_allowed_end_date_time = None
     next_denied_start_date_time = None
     next_denied_end_date_time = None
-    
+
     def get_next_date_time(self, weekdays, dt):
         weekday = datetime.datetime.now().weekday()
 
@@ -229,15 +240,15 @@ class Schedule(models.Model):
 
                 date_time_str = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
                 date_time = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
-                
+
                 if date_time > now_date_time:
                     return date_time
-            
+
             if weekday == 6:
                 weekday = 0
             else:
                 weekday += 1
-    
+
     def get_allowed_weekdays(self):
         allowed_weekdays = []
         if self.allow_monday: allowed_weekdays.append(0)
@@ -267,11 +278,11 @@ class Schedule(models.Model):
             is_same_day = next_allowed_start_date_time <= next_allowed_end_date_time
         else:
             return False
-        
+
         if is_same_day:
             return False
         else:
-            return True           
+            return True
 
     def is_denied_time(self):
         next_denied_start_date_time = self.get_next_date_time(self.get_denied_weekdays(), self.deny_time_start)
@@ -287,35 +298,32 @@ class Schedule(models.Model):
             return True
 
 
-
 class ScheduleForm(ModelForm):
-
     class Meta:
         model = Schedule
         fields = ('plan', 'allow_monday', 'allow_tuesday', 'allow_wednesday', 'allow_thursday',
-         'allow_friday', 'allow_saturday', 'allow_sunday', 'allow_time_start', 'allow_time_stop',
-         'deny_monday', 'deny_tuesday', 'deny_wednesday', 'deny_thursday',
-         'deny_friday', 'deny_saturday', 'deny_sunday', 'deny_time_start', 'deny_time_stop')
-
+                  'allow_friday', 'allow_saturday', 'allow_sunday', 'allow_time_start', 'allow_time_stop',
+                  'deny_monday', 'deny_tuesday', 'deny_wednesday', 'deny_thursday',
+                  'deny_friday', 'deny_saturday', 'deny_sunday', 'deny_time_start', 'deny_time_stop')
 
         widgets = {
-            'plan': forms.NumberInput(attrs={'style': 'display:none'}), 
-            'allow_monday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'allow_tuesday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'allow_wednesday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'plan': forms.NumberInput(attrs={'style': 'display:none'}),
+            'allow_monday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_tuesday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_wednesday': forms.CheckboxInput(attrs={'class': 'form-control'}),
             'allow_thursday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_friday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'allow_saturday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'allow_sunday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'allow_time_start': forms.TimeInput(attrs={'class': 'form-control'}), 
+            'allow_friday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_saturday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_sunday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_time_start': forms.TimeInput(attrs={'class': 'form-control'}),
             'allow_time_stop': forms.TimeInput(attrs={'class': 'form-control'}),
-            'deny_monday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'deny_tuesday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'deny_wednesday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
+            'deny_monday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'deny_tuesday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'deny_wednesday': forms.CheckboxInput(attrs={'class': 'form-control'}),
             'deny_thursday': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'deny_friday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'deny_saturday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'deny_sunday': forms.CheckboxInput(attrs={'class': 'form-control'}), 
-            'deny_time_start': forms.TimeInput(attrs={'class': 'form-control'}), 
+            'deny_friday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'deny_saturday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'deny_sunday': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'deny_time_start': forms.TimeInput(attrs={'class': 'form-control'}),
             'deny_time_stop': forms.TimeInput(attrs={'class': 'form-control'}),
         }
