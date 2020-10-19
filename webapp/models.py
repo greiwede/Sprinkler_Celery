@@ -76,6 +76,7 @@ class Valve(Device):
     device_type = 'Ventil'
     valve_counter = None
     valve_threshold = models.IntegerField(default=100)
+    watering_time = models.DecimalField(max_digits=5, decimal_places=2)
     sensor_fk = models.ForeignKey(Sensor, on_delete=models.SET_NULL, null=True)
     pump_fk = models.ForeignKey(Pump, on_delete=models.SET_NULL, null=True)
 
@@ -98,6 +99,11 @@ class SprinklerForm(ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
+
+class WeatherCounter(models.Model)
+    weather_counter = None # wie beim Valve_Counter
+    updated_at = models.DateTimeField(auto_now=True)
+
 
 
 class Plan(CommonInfo):
