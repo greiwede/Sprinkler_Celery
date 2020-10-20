@@ -10,11 +10,86 @@
 
 <h3>Wasserverbrauch</h3>
 
-<br><br>
+<br>
+
+<div class="dropdown">
+  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Für das Jahr 2020
+  </a>
+
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    <a class="dropdown-item" href="#">2019</a>
+    <a class="dropdown-item" href="#">2018</a>
+  </div>
+</div>
+
+<br>
+
+<canvas id="waterUsageChart"></canvas>
+
+<br>
+
+<hr>
+
+<br>
+
+<canvas id="waterPieChart"></canvas>
 
 <h3>Historie</h3>
       
-<br><br>
+<br>
+
+<script type="text/javascript">
+	var ctx = document.getElementById('waterUsageChart').getContext('2d');
+	var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+    // The data for our dataset
+    data: {
+        labels: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+        datasets: [{
+            label: 'Insgesamt Liter/Monat',
+            backgroundColor: 'rgb(46, 164, 219)',
+            data: [2, 10, 5, 2, 20, 30, 45, 35, 28, 15, 5, 3]
+        }]
+    },
+    options: {}
+	});
+
+	var ctx2 = document.getElementById('waterPieChart').getContext('2d');
+	var chart2 = new Chart(ctx2, {
+	type: 'pie',
+	data: {
+			datasets: [{
+				data: [
+					1, 2, 3, 4, 5
+				],
+				backgroundColor: [
+				'rgb('+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+')',
+				'rgb('+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+')',
+				'rgb('+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+')',
+				'rgb('+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+')',
+				'rgb('+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+','+Math.floor(Math.random() * 256)+')',
+
+
+				],
+				label: 'Dataset 1'
+			}],
+			labels: [
+				'Rasen vorne',
+				'Kirschbaum',
+				'Rosen Terasse',
+				'Rasen hinten',
+				'Rododrendron'
+			]
+		},
+		options: {
+			responsive: true
+			
+		}
+		
+	});
+</script>
 
 {% include "views/footer.html" %}
 

@@ -120,7 +120,7 @@ class SprinklerForm(forms.ModelForm):
         model = Sprinkler
         fields = ['name', 'contr_id', 'flow_capacity', 'valve_fk']
 
-class WeatherCounter(models.Model)
+class WeatherCounter(models.Model):
     weather_counter = None # wie beim Valve_Counter
     updated_at = models.DateTimeField(auto_now=True)
 
